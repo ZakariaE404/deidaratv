@@ -23,7 +23,7 @@
 const SHARED_SERVERS = [
   { name: "سيرفر 1 (رئيسي)", url: "aHR0cHM6Ly96MS5kZXBvb29vLmNvbS9hbGJhcGxheWVyL2JlaW4tMS8/c2Vydj0x" },
   { name: "سيرفر 2", url: "aHR0cHM6Ly9wNC5wYW5kYS1oZC5vbmxpbmUvYWxiYXBsYXllci9leHRyYS0x" },
-  { name: "سيرفر 3 (متعدد)", url: "aHR0cHM6Ly96MS5kZXBvb29vLmNvbS9hbGJhcGxheWVyL2JlaW4tMS8/c2Vydj0x" }
+  { name: "سيرفر 3 (متعدد)", url: "aHR0cHM6Ly9saXZlLmtvb3JhbjE4LmNmZC90aXN0MS9pbmRleC5tM3U4" }
 ];
 
 const MATCHES_DATA = [

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HLS Stream Player</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <style>
+        /* Reset margins to make the video sit flush inside the iframe */
+        body { 
+            margin: 0; 
+            padding: 0; 
+            background-color: #000; 
+            overflow: hidden; 
+        }
+        /* Ensure the video takes up the exact size of the iframe */
+        video { 
+            width: 100vw; 
+            height: 100vh; 
+            object-fit: contain; 
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+    <video id="video-player" controls autoplay></video>
+
+    <script>
+        const video = document.getElementById('video-player');
+        const streamUrl = 'https://live.kooran18.cfd/tist1/index.m3u8';
+
+        // Check if the browser supports HLS.js
+        if (Hls.isSupported()) {
+            const hls = new Hls();
+            hls.loadSource(streamUrl);
+            hls.attachMedia(video);
+            hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                // Attempt to auto-play once loaded
+                video.play().catch(error => {
+                    console.log("Autoplay was prevented by the browser:", error);
+                });
+            });
+        } 
+        // Fallback for browsers with native HLS support (like Safari)
+        else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            video.src = streamUrl;
+            video.addEventListener('loadedmetadata', function() {
+                video.play().catch(error => {
+                    console.log("Autoplay was prevented by the browser:", error);
+                });
+            });
+        } else {
+            console.error("Your browser does not support HLS playback.");
+        }
+    </script>
+</body>
+</html>
