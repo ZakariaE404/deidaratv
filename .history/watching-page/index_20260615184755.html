@@ -1,29 +1,5 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<style>
-    /* 1. The Global Safety Net: Prevents the entire website from scrolling left/right */
-    html,
-    body {
-        max-width: 100%;
-        overflow-x: hidden;
-    }
-
-    /* 2. Container adjustment */
-    .responsive-ad-wrapper {
-        width: 100%;
-        max-width: 100%;
-        display: flex;
-        justify-content: center;
-        overflow: hidden;
-        margin: 10px 0;
-    }
-
-    /* 3. Force the injected ad iframe to scale down to the screen size */
-    .responsive-ad-wrapper iframe {
-        max-width: 100% !important;
-        height: auto !important;
-    }
-</style>
 
 <head>
     <meta charset="UTF-8">
@@ -104,6 +80,29 @@
             color: white;
             border-color: #e11d48;
         }
+
+        /* 1. The Global Safety Net: Prevents the entire website from scrolling left/right */
+        html,
+        body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        /* 2. Container adjustment */
+        .responsive-ad-wrapper {
+            width: 100%;
+            max-width: 100%;
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        /* 3. Force the injected ad iframe to scale down to the screen size */
+        .responsive-ad-wrapper iframe {
+            max-width: 100% !important;
+            height: auto !important;
+        }
     </style>
 </head>
 
@@ -138,7 +137,7 @@
                         </div>
                     </div>
                 </div>
-
+                <br>
                 <div
                     class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 bg-red-950/40 px-3 py-1 md:px-4 md:py-1.5 rounded-md border border-red-900/50">
                     <span class="relative flex h-2 w-2">
@@ -149,7 +148,7 @@
                     <span
                         class="text-[10px] md:text-xs font-black uppercase tracking-widest italic text-red-500 pt-0.5">Live</span>
                 </div>
-
+                <br>
                 <div class="flex items-center gap-3 md:gap-4">
 
                     <a href="../"
@@ -174,31 +173,7 @@
             </div>
         </div>
     </header>
-    <div class="desktop-ad-container">
-        <script>
-            atOptions = {
-                'key': 'a80c85e25ff44dbe85a001d4fc296099',
-                'format': 'iframe',
-                'height': 90,
-                'width': 728,
-                'params': {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/a80c85e25ff44dbe85a001d4fc296099/invoke.js"></script>
-    </div>
 
-    <div class="mobile-ad-container">
-        <script>
-            atOptions = {
-                'key': 'df048af0c4b200818dc2d1ed23fe278b',
-                'format': 'iframe',
-                'height': 50,
-                'width': 320,
-                'params': {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/df048af0c4b200818dc2d1ed23fe278b/invoke.js"></script>
-    </div>
     <main class="container mx-auto px-4 max-w-5xl mt-8">
 
         <!-- Player & Servers Wrapper -->
@@ -215,6 +190,31 @@
                     <span class="bg-slate-100 px-3 py-1 rounded-full text-slate-500 italic">الجودة: Auto / 1080p</span>
                     <span class="bg-red-100 px-3 py-1 rounded-full text-red-600">LIVE - مباشر</span>
                 </div>
+            </div>
+            <div class="desktop-ad-container">
+                <script>
+                    atOptions = {
+                        'key': 'a80c85e25ff44dbe85a001d4fc296099',
+                        'format': 'iframe',
+                        'height': 90,
+                        'width': 728,
+                        'params': {}
+                    };
+                </script>
+                <script src="https://www.highperformanceformat.com/a80c85e25ff44dbe85a001d4fc296099/invoke.js"></script>
+            </div>
+
+            <div class="mobile-ad-container">
+                <script>
+                    atOptions = {
+                        'key': 'df048af0c4b200818dc2d1ed23fe278b',
+                        'format': 'iframe',
+                        'height': 50,
+                        'width': 320,
+                        'params': {}
+                    };
+                </script>
+                <script src="https://www.highperformanceformat.com/df048af0c4b200818dc2d1ed23fe278b/invoke.js"></script>
             </div>
 
 

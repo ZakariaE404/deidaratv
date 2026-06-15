@@ -1,29 +1,5 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<style>
-    /* 1. The Global Safety Net: Prevents the entire website from scrolling left/right */
-    html,
-    body {
-        max-width: 100%;
-        overflow-x: hidden;
-    }
-
-    /* 2. Container adjustment */
-    .responsive-ad-wrapper {
-        width: 100%;
-        max-width: 100%;
-        display: flex;
-        justify-content: center;
-        overflow: hidden;
-        margin: 10px 0;
-    }
-
-    /* 3. Force the injected ad iframe to scale down to the screen size */
-    .responsive-ad-wrapper iframe {
-        max-width: 100% !important;
-        height: auto !important;
-    }
-</style>
 
 <head>
     <meta charset="UTF-8">
@@ -103,6 +79,29 @@
             background-color: #e11d48;
             color: white;
             border-color: #e11d48;
+        }
+
+        /* 1. The Global Safety Net: Prevents the entire website from scrolling left/right */
+        html,
+        body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        /* 2. Container adjustment */
+        .responsive-ad-wrapper {
+            width: 100%;
+            max-width: 100%;
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        /* 3. Force the injected ad iframe to scale down to the screen size */
+        .responsive-ad-wrapper iframe {
+            max-width: 100% !important;
+            height: auto !important;
         }
     </style>
 </head>
