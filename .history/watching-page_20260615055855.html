@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="imgs/icon.png">
+
+    <!-- تحسين محركات البحث - SEO -->
+    <title id="seo-title">بث مباشر للمباراة | DeidaraTV - ديدارا تي في</title>
+    <meta id="seo-description" name="description"
+        content="شاهد البث المباشر للمباريات بجودة عالية HD بدون تقطيع على DeidaraTV. تابع أهم مباريات اليوم والدوريات العالمية حصرياً.">
+    <meta id="seo-keywords" name="keywords"
+        content="DeidaraTV, ديدارا تي في, بث مباشر, كرة قدم, مباراة اليوم, يلا شوت, بث مباشر بدون تقطيع, دوري أبطال أوروبا">
+    <meta name="robots" content="index, follow">
+    <link id="seo-canonical" rel="canonical" href="https://deidaratv.live/watching-page">
+
+    <!-- Open Graph (Facebook / WhatsApp) -->
+    <meta id="og-title" property="og:title" content="بث مباشر للمباراة | DeidaraTV - ديدارا تي في">
+    <meta id="og-description" property="og:description"
+        content="شاهد البث المباشر للمباريات بجودة عالية HD بدون تقطيع على DeidaraTV. تابع أهم مباريات اليوم والدوريات العالمية حصرياً.">
+    <meta id="og-image" property="og:image" content="https://deidaratv.live/imgs/icon.png">
+    <meta id="og-url" property="og:url" content="https://deidaratv.live/watching-page">
+    <meta property="og:type" content="video.other">
+    <meta property="og:site_name" content="DeidaraTV">
+    <meta property="og:locale" content="ar_AR">
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta id="twitter-title" name="twitter:title" content="بث مباشر للمباراة | DeidaraTV - ديدارا تي في">
+    <meta id="twitter-description" name="twitter:description"
+        content="شاهد البث المباشر للمباريات بجودة عالية HD بدون تقطيع على DeidaraTV. تابع أهم مباريات اليوم والدوريات العالمية حصرياً.">
+    <meta id="twitter-image" name="twitter:image" content="https://deidaratv.live/imgs/icon.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #f1f5f9;
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .bg-red-main {
+            background-color: #e11d48;
+        }
+
+        .btn-server {
+            transition: all 0.2s;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-server:hover {
+            background-color: #e11d48;
+            color: white;
+            border-color: #e11d48;
+        }
+
+        .active-server {
+            background-color: #e11d48;
+            color: white;
+            border-color: #e11d48;
+        }
+    </style>
+</head>
+
+<body class="text-slate-800">
+
+    <!-- Header -->
+    <!-- هيدر صفحة المشاهدة - DeidaraTV Watching Page -->
+    <header class="bg-[#0b0f19] text-slate-300 border-b border-slate-800/80 sticky top-0 z-[100]">
+        <div class="container mx-auto px-4 lg:px-8 relative">
+            <div class="flex justify-between items-center h-16 md:h-[72px]" dir="rtl">
+
+                <div class="flex items-center gap-3 md:gap-4">
+                    <a href="./"
+                        class="flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800 px-3 py-1.5 rounded-md transition-colors text-xs md:text-sm font-semibold border border-slate-700">
+                        <i class="fas fa-chevron-right text-[10px] md:text-xs"></i>
+                        الرئيسية
+                    </a>
+
+                    <div onclick="window.location.reload()"
+                        class="flex items-center gap-3 cursor-pointer group border-r border-slate-800 pr-3 mr-1 md:pr-4 md:mr-2 select-none transition-all active:scale-95">
+
+                        <img src="imgs/icon.png" alt="DeidaraTV Logo"
+                            class="h-[30px] md:h-[50px] w-auto object-contain transition-opacity group-hover:opacity-80">
+
+                        <div class="hidden sm:flex flex-col">
+                            <h1
+                                class="text-lg md:text-xl font-black italic tracking-tighter uppercase leading-none text-white">
+                                Deidara<span class="text-red-600">TV</span>
+                            </h1>
+                            <span class="text-[9px] font-bold text-slate-500 tracking-widest uppercase mt-0.5">Live
+                                Stream</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 bg-red-950/40 px-3 py-1 md:px-4 md:py-1.5 rounded-md border border-red-900/50">
+                    <span class="relative flex h-2 w-2">
+                        <span
+                            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-red-600"></span>
+                    </span>
+                    <span
+                        class="text-[10px] md:text-xs font-black uppercase tracking-widest italic text-red-500 pt-0.5">Live</span>
+                </div>
+
+                <div class="flex items-center gap-3 md:gap-4">
+
+                    <a href="./"
+                        class="hidden md:flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-white transition-colors">
+                        <i class="fas fa-list-ul"></i>
+                        جدول اليوم
+                    </a>
+
+                    <div class="h-6 w-[1px] bg-slate-800 mx-1 hidden md:block"></div>
+
+                    <a href="https://t.me/deidaraTV" target="_blank"
+                        class="text-[#38bdf8] hover:text-white transition-colors flex items-center justify-center">
+                        <i class="fab fa-telegram text-xl md:text-2xl"></i>
+                    </a>
+
+                    <button
+                        class="w-9 h-9 flex items-center justify-center rounded-md text-slate-400 hover:text-white hover:bg-slate-800 border border-transparent hover:border-slate-700 transition-all">
+                        <i class="fas fa-share-alt text-sm"></i>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 max-w-5xl mt-8">
+
+        <!-- Player & Servers Wrapper -->
+        <div id="player-wrapper">
+            <!-- Match Title Area -->
+            <div
+                class="bg-white rounded-2xl p-4 mb-6 shadow-sm flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <span class="w-3.5 h-3.5 bg-red-600 rounded-full animate-ping"></span>
+                    <h2 id="match-heading" class="text-lg md:text-xl font-black italic text-slate-900">بث مباشر: جاري
+                        التحميل...</h2>
+                </div>
+                <div class="flex gap-2 text-xs font-bold">
+                    <span class="bg-slate-100 px-3 py-1 rounded-full text-slate-500 italic">الجودة: Auto / 1080p</span>
+                    <span class="bg-red-100 px-3 py-1 rounded-full text-red-600">LIVE - مباشر</span>
+                </div>
+            </div>
+
+            <div class="video-container bg-black shadow-2xl">
+                <iframe id="player-iframe" src="" allowfullscreen="true" scrolling="no" allow="encrypted-media">
+                </iframe>
+            </div>
+            <!-- Servers Selection -->
+            <div id="servers-container" class="mt-6 flex flex-wrap gap-2 justify-center">
+                <!-- سيرفرات البث يتم رندرتها برمجياً -->
+            </div>
+        </div>
+
+        <!-- Error Container (مخفي افتراضياً) -->
+        <div id="error-container"
+            class="hidden bg-white rounded-3xl p-12 border border-slate-100 shadow-sm text-center max-w-lg mx-auto mt-10">
+            <i class="fas fa-exclamation-triangle text-red-500 text-5xl mb-4"></i>
+            <h3 class="text-xl font-black text-slate-800 mb-2">المباراة غير موجودة</h3>
+            <p class="text-slate-500 text-sm mb-6 leading-relaxed">يرجى العودة إلى الصفحة الرئيسية واختيار مباراة صالحة
+                لمتابعة البث المباشر.</p>
+            <a href="./"
+                class="inline-flex items-center gap-2 bg-red-main hover:bg-red-700 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-lg shadow-red-200">
+                <i class="fas fa-arrow-right"></i>
+                العودة للرئيسية
+            </a>
+        </div>
+
+        <!-- SEO Content Section -->
+        <article class="mt-12 bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
+            <h3 class="text-2xl font-black text-red-main mb-6 border-r-4 border-red-main pr-4 italic">لماذا تشاهد عبر
+                DeidaraTV؟</h3>
+
+            <div class="grid md:grid-cols-2 gap-8 leading-relaxed">
+                <div class="space-y-4 text-slate-600">
+                    <p>
+                        يعتبر موقع <strong>DeidaraTV (ديدارا تي في)</strong> الواجهة الأولى لعشاق كرة القدم في الوطن
+                        العربي. نحن ندرك أهمية اللحظة، لذا نوفر لك بثاً مباشراً للإستمتاع
+                        بأهداف فريقك المفضل.
+                    </p>
+                    <ul class="space-y-2">
+                        <li><i class="fas fa-check-circle text-green-500 ml-2"></i> بث مباشر للمباريات بجودة Full HD.
+                        </li>
+                        <li><i class="fas fa-check-circle text-green-500 ml-2"></i> توافق تام مع جميع أجهزة الأندرويد
+                            والآيفون.</li>
+                        <li><i class="fas fa-check-circle text-green-500 ml-2"></i> تحديث مستمر للسيرفرات لتجنب التقطيع
+                            أثناء الضغط.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-50 p-6 rounded-2xl border border-dashed border-slate-200">
+                    <h4 class="font-bold text-slate-800 mb-3 italic">تغطية شاملة لكافة البطولات:</h4>
+                    <p class="text-sm text-slate-500 leading-7 italic">
+                        سواء كنت تبحث عن <strong>بث مباشر الدوري المغربي</strong>، الدوري السعودي، أو أقوى مباريات دوري
+                        أبطال أوروبا، فإن ديدارا تي في يضع بين يديك جدولاً محدثاً يومياً بجميع القنوات الناقلة والمعلقين
+                        المفضلين لديك. لا تفوت أي لحظة من الإثارة الكروية معنا.
+                    </p>
+                </div>
+            </div>
+        </article>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-16 bg-white border-t border-slate-200 py-10">
+        <div class="container mx-auto px-4 text-center">
+            <div class="mb-6 flex justify-center gap-8 text-slate-400 text-xl italic">
+                <i class="fab fa-facebook-f hover:text-red-main cursor-pointer"></i>
+                <i class="fab fa-whatsapp hover:text-red-main cursor-pointer"></i>
+                <i class="fab fa-instagram hover:text-red-main cursor-pointer"></i>
+            </div>
+            <p class="text-slate-500 text-sm font-medium">
+                &copy; 2026 جميع الحقوق محفوظة لـ <span class="text-red-main font-black uppercase">DeidaraTV</span>
+            </p>
+            <p class="text-slate-400 text-[10px] mt-2 italic uppercase tracking-widest">
+                Professional Live Streaming Platform
+            </p>
+        </div>
+    </footer>
+
+    <!-- مكتبة البيانات وسكربت صفحة المشاهدة -->
+    <script src="data.js"></script>
+    <script>
+        // === مزامنة الوقت مع السيرفر لمنع التلاعب بتوقيت الجهاز المحلي ===
+        let timeOffsetMs = 0;
+
+        function getCurrentTime() {
+            return new Date(Date.now() + timeOffsetMs);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const matchId = parseInt(urlParams.get('id'));
+
+            // البحث عن المباراة المطلوبة
+            const match = MATCHES_DATA.find(m => m.id === matchId);
+
+            const playerWrapper = document.getElementById('player-wrapper');
+            const errorContainer = document.getElementById('error-container');
+            const matchHeading = document.getElementById('match-heading');
+            const playerIframe = document.getElementById('player-iframe');
+            const serversContainer = document.getElementById('servers-container');
+
+            function checkAccessAndRender() {
+                if (!match) {
+                    if (playerWrapper) playerWrapper.classList.add('hidden');
+                    if (errorContainer) {
+                        errorContainer.classList.remove('hidden');
+                        const errorTitle = errorContainer.querySelector('h3');
+                        const errorText = errorContainer.querySelector('p');
+                        if (errorTitle) errorTitle.textContent = "المباراة غير موجودة";
+                        if (errorText) errorText.textContent = "يرجى العودة إلى الصفحة الرئيسية واختيار مباراة صالحة لمشاهدة البث المباشر.";
+                    }
+                    document.title = "المباراة غير موجودة | DeidaraTV";
+                    return;
+                }
+
+                // تحويل صيغة التاريخ UTC إلى كائن Date
+                function parseMatchDate(dateTimeStr) {
+                    return new Date(dateTimeStr);
+                }
+
+                // حساب ما إذا كان البث مفتوحاً حالياً (باستخدام التوقيت الحقيقي العالمي الموحد)
+                const matchTime = parseMatchDate(match.dateTime);
+                const now = getCurrentTime();
+                const diffMs = now - matchTime;
+                const diffMins = diffMs / (1000 * 60);
+
+                // مفتوح فقط من 30 دقيقة قبل المباراة وحتى 2.5 ساعة بعد بدايتها
+                const isLinkActive = (diffMins >= -30 && diffMins <= 150);
+
+                if (!isLinkActive) {
+                    if (playerWrapper) playerWrapper.classList.add('hidden');
+                    if (errorContainer) {
+                        errorContainer.classList.remove('hidden');
+                        const errorTitle = errorContainer.querySelector('h3');
+                        const errorText = errorContainer.querySelector('p');
+                        if (errorTitle) errorTitle.textContent = "البث غير متوفر حالياً";
+                        if (errorText) errorText.textContent = "البث المباشر لهذه المباراة يفتح فقط قبل بدايتها بـ 30 دقيقة وينتهي بانتهاء اللقاء.";
+                    }
+                    document.title = "البث غير متوفر | DeidaraTV";
+                    return;
+                }
+
+                // إذا كانت صالحة، تأكد من إظهار المشغل وإخفاء الخطأ
+                if (playerWrapper) playerWrapper.classList.remove('hidden');
+                if (errorContainer) errorContainer.classList.add('hidden');
+
+                // تحديث عنوان علامة التبويب وعنوان الصفحة
+                const titleText = `بث مباشر مباراة ${match.team1.name} ضد ${match.team2.name} | ${match.league} - DeidaraTV`;
+                document.title = titleText;
+                if (matchHeading) matchHeading.textContent = `بث مباشر: ${match.team1.name} × ${match.team2.name}`;
+
+                // تحديث ميتا الوصف والكلمات الدلالية ديناميكياً
+                const descriptionText = `شاهد البث المباشر لمباراة ${match.team1.name} ضد ${match.team2.name} في ${match.league} بجودة عالية HD بدون تقطيع على DeidaraTV. تابع أهم مباريات اليوم والدوريات العالمية حصرياً.`;
+                const keywordsText = `بث مباشر, مباراة ${match.team1.name}, مباراة ${match.team2.name}, ${match.league}, ${match.channel}, ديدارا تي في, DeidaraTV, يلا شوت`;
+
+                const metaDesc = document.getElementById('seo-description');
+                if (metaDesc) metaDesc.setAttribute('content', descriptionText);
+
+                const metaKeys = document.getElementById('seo-keywords');
+                if (metaKeys) metaKeys.setAttribute('content', keywordsText);
+
+                // تحديث Canonical URL
+                const canonicalLink = document.getElementById('seo-canonical');
+                if (canonicalLink) canonicalLink.setAttribute('href', `https://deidaratv.live/watching-page?id=${match.id}`);
+
+                // تحديث كروت التواصل الاجتماعي
+                const ogTitle = document.getElementById('og-title');
+                if (ogTitle) ogTitle.setAttribute('content', `بث مباشر مباراة ${match.team1.name} ضد ${match.team2.name}`);
+
+                const ogDesc = document.getElementById('og-description');
+                if (ogDesc) ogDesc.setAttribute('content', descriptionText);
+
+                const ogUrl = document.getElementById('og-url');
+                if (ogUrl) ogUrl.setAttribute('content', `https://deidaratv.live/watching-page?id=${match.id}`);
+
+                const twitterTitle = document.getElementById('twitter-title');
+                if (twitterTitle) twitterTitle.setAttribute('content', `بث مباشر مباراة ${match.team1.name} ضد ${match.team2.name}`);
+
+                const twitterDesc = document.getElementById('twitter-description');
+                if (twitterDesc) twitterDesc.setAttribute('content', descriptionText);
+
+                // توليد وإضافة بيانات سكيما JSON-LD للمباراة
+                // إزالة أي سكيما سابقة للمباراة لمنع التكرار عند إعادة الرندر
+                const oldSchema = document.getElementById('match-jsonld-schema');
+                if (oldSchema) oldSchema.remove();
+
+                const schemaData = {
+                    "@context": "https://schema.org",
+                    "@type": "SportsEvent",
+                    "@id": `https://deidaratv.live/watching-page?id=${match.id}`,
+                    "name": `مباراة ${match.team1.name} ضد ${match.team2.name}`,
+                    "description": `بث مباشر لمباراة ${match.team1.name} ضد ${match.team2.name} في بطولة ${match.league}`,
+                    "startDate": match.dateTime,
+                    "homeTeam": {
+                        "@type": "SportsTeam",
+                        "name": match.team1.name,
+                        "logo": match.team1.logo
+                    },
+                    "awayTeam": {
+                        "@type": "SportsTeam",
+                        "name": match.team2.name,
+                        "logo": match.team2.logo
+                    },
+                    "sport": "https://en.wikipedia.org/wiki/Association_football",
+                    "location": {
+                        "@type": "Place",
+                        "name": "World Cup 2026 Venue",
+                        "address": {
+                            "@type": "PostalAddress",
+                            "addressCountry": "North America"
+                        }
+                    },
+                    "competitor": [
+                        {
+                            "@type": "SportsTeam",
+                            "name": match.team1.name
+                        },
+                        {
+                            "@type": "SportsTeam",
+                            "name": match.team2.name
+                        }
+                    ]
+                };
+
+                const script = document.createElement('script');
+                script.id = 'match-jsonld-schema';
+                script.type = 'application/ld+json';
+                script.text = JSON.stringify(schemaData);
+                document.head.appendChild(script);
+
+                // دالة فك التشفير الـ Base64 لروابط البث لحمايتها من الكشط (Scraping)
+                function decodeStreamUrl(encodedStr) {
+                    try {
+                        return atob(encodedStr);
+                    } catch (e) {
+                        console.error("خطأ في فك تشفير رابط البث:", e);
+                        return "";
+                    }
+                }
+
+                // رندر أزرار السيرفرات وإعداد الرابط الافتراضي
+                if (serversContainer && match.servers && match.servers.length > 0) {
+                    // لمنع تكرار بناء الأزرار عند إعادة الرندر بعد مزامنة الوقت
+                    if (serversContainer.children.length === 0) {
+                        serversContainer.innerHTML = '';
+
+                        if (playerIframe) {
+                            playerIframe.src = decodeStreamUrl(match.servers[0].url);
+                        }
+
+                        match.servers.forEach((server, index) => {
+                            const btn = document.createElement('button');
+                            btn.className = `btn-server px-6 py-2 rounded-xl font-bold text-sm bg-white ${index === 0 ? 'active-server bg-red-main text-white' : ''}`;
+                            btn.textContent = server.name;
+
+                            btn.addEventListener('click', () => {
+                                const allBtns = serversContainer.querySelectorAll('.btn-server');
+                                allBtns.forEach(b => {
+                                    b.classList.remove('active-server', 'bg-red-main', 'text-white');
+                                    b.classList.add('bg-white');
+                                });
+
+                                btn.classList.add('active-server', 'bg-red-main', 'text-white');
+                                btn.classList.remove('bg-white');
+
+                                if (playerIframe) {
+                                    playerIframe.src = decodeStreamUrl(server.url);
+                                }
+                            });
+
+                            serversContainer.appendChild(btn);
+                        });
+                    }
+                } else {
+                    if (serversContainer) {
+                        serversContainer.innerHTML = `<span class="text-sm text-slate-500 italic">لا تتوفر روابط بث لهذه المباراة حالياً.</span>`;
+                    }
+                }
+            }
+
+            // تشغيل الرندر المبدئي بالوقت المحلي للزائر فوراً
+            checkAccessAndRender();
+
+            // مزامنة الوقت بدقة مع السيرفر وتصحيح العرض
+            async function syncTimeWithServer() {
+                if (window.location.protocol === 'file:') return;
+                try {
+                    const start = performance.now();
+                    const response = await fetch(window.location.href, { method: 'HEAD' });
+                    const serverDateStr = response.headers.get('Date');
+                    if (serverDateStr) {
+                        const serverTime = new Date(serverDateStr);
+                        const end = performance.now();
+                        const latency = (end - start) / 2;
+                        const adjustedServerTime = new Date(serverTime.getTime() + latency);
+                        timeOffsetMs = adjustedServerTime - new Date();
+                        console.log("تمت مزامنة وقت المشاهدة مع السيرفر.");
+                        checkAccessAndRender();
+                    }
+                } catch (e) {
+                    console.warn("تعذر التحقق من وقت السيرفر:", e);
+                }
+            }
+
+            syncTimeWithServer();
+        });
+    </script>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BXPTL3P21R"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-BXPTL3P21R');
+    </script>
+</body>
+
+</html>

@@ -4,14 +4,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="imgs/icon.png">
+    <link rel="icon" type="image/png" href="../imgs/icon.png">
 
     <!-- تحسين محركات البحث - SEO -->
-    <title>بث مباشر مباراة المغرب والبرازيل | DeidaraTV - ديدارا تي في</title>
-    <meta name="description"
-        content="شاهد البث المباشر لمباراة المغرب ضد البرازيل بجودة عالية HD بدون تقطيع على DeidaraTV. تابع أهم مباريات اليوم والدوريات العالمية حصرياً.">
-    <meta name="keywords"
-        content="DeidaraTV, ديدارا تي في, بث مباشر, كرة قدم, مباراة المغرب اليوم, يلا شوت, بث مباشر بدون تقطيع, دوري أبطال أوروبا">
+    <title id="seo-title">بث مباشر للمباراة | DeidaraTV - ديدارا تي في</title>
+    <meta id="seo-description" name="description"
+        content="شاهد البث المباشر للمباريات بجودة عالية HD بدون تقطيع على DeidaraTV. تابع أهم مباريات اليوم والدوريات العالمية حصرياً.">
+    <meta id="seo-keywords" name="keywords"
+        content="DeidaraTV, ديدارا تي في, بث مباشر, كرة قدم, مباراة اليوم, يلا شوت, بث مباشر بدون تقطيع, دوري أبطال أوروبا">
+    <meta name="robots" content="index, follow">
+    <link id="seo-canonical" rel="canonical" href="https://deidaratv.live/watching-page">
+
+    <!-- Open Graph (Facebook / WhatsApp) -->
+    <meta id="og-title" property="og:title" content="بث مباشر للمباراة | DeidaraTV - ديدارا تي في">
+    <meta id="og-description" property="og:description"
+        content="شاهد البث المباشر للمباريات بجودة عالية HD بدون تقطيع على DeidaraTV. تابع أهم مباريات اليوم والدوريات العالمية حصرياً.">
+    <meta id="og-image" property="og:image" content="https://deidaratv.live/imgs/icon.png">
+    <meta id="og-url" property="og:url" content="https://deidaratv.live/watching-page">
+    <meta property="og:type" content="video.other">
+    <meta property="og:site_name" content="DeidaraTV">
+    <meta property="og:locale" content="ar_AR">
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta id="twitter-title" name="twitter:title" content="بث مباشر للمباراة | DeidaraTV - ديدارا تي في">
+    <meta id="twitter-description" name="twitter:description"
+        content="شاهد البث المباشر للمباريات بجودة عالية HD بدون تقطيع على DeidaraTV. تابع أهم مباريات اليوم والدوريات العالمية حصرياً.">
+    <meta name="twitter:image" content="https://deidaratv.live/imgs/icon.png">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -73,7 +92,7 @@
             <div class="flex justify-between items-center h-16 md:h-[72px]" dir="rtl">
 
                 <div class="flex items-center gap-3 md:gap-4">
-                    <a href="./"
+                    <a href="../"
                         class="flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800 px-3 py-1.5 rounded-md transition-colors text-xs md:text-sm font-semibold border border-slate-700">
                         <i class="fas fa-chevron-right text-[10px] md:text-xs"></i>
                         الرئيسية
@@ -82,7 +101,7 @@
                     <div onclick="window.location.reload()"
                         class="flex items-center gap-3 cursor-pointer group border-r border-slate-800 pr-3 mr-1 md:pr-4 md:mr-2 select-none transition-all active:scale-95">
 
-                        <img src="imgs/icon.png" alt="DeidaraTV Logo"
+                        <img src="../imgs/icon.png" alt="DeidaraTV Logo"
                             class="h-[30px] md:h-[50px] w-auto object-contain transition-opacity group-hover:opacity-80">
 
                         <div class="hidden sm:flex flex-col">
@@ -109,7 +128,7 @@
 
                 <div class="flex items-center gap-3 md:gap-4">
 
-                    <a href="./"
+                    <a href="../"
                         class="hidden md:flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-white transition-colors">
                         <i class="fas fa-list-ul"></i>
                         جدول اليوم
@@ -149,16 +168,51 @@
                     <span class="bg-red-100 px-3 py-1 rounded-full text-red-600">LIVE - مباشر</span>
                 </div>
             </div>
+            <script>
+                atOptions = {
+                    'key': 'a80c85e25ff44dbe85a001d4fc296099',
+                    'format': 'iframe',
+                    'height': 90,
+                    'width': 728,
+                    'params': {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/a80c85e25ff44dbe85a001d4fc296099/invoke.js"></script>
 
-            <div class="video-container bg-black shadow-2xl">
-                <iframe id="player-iframe" src="" allowfullscreen="true" scrolling="no" allow="encrypted-media">
-                </iframe>
+
+            <div class="video-container bg-black shadow-2xl" id="video-wrapper">
+                <iframe id="player-iframe" src="" allowfullscreen="true" scrolling="no"
+                    allow="encrypted-media"></iframe>
+                <!-- طبقة الخطأ عند فشل تحميل البث -->
+                <div id="stream-error-overlay"
+                    class="hidden absolute inset-0 flex flex-col items-center justify-center bg-gray-950 z-10 gap-4 p-6">
+                    <div
+                        class="w-16 h-16 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center">
+                        <i class="fas fa-wifi text-red-400 text-2xl"></i>
+                    </div>
+                    <p class="text-white font-bold text-lg text-center">البث غير متاح مؤقتاً</p>
+                    <p class="text-slate-400 text-sm text-center">جرب سيرفراً آخر أو انتظر قليلاً وأعد تحديث الصفحة</p>
+                    <button onclick="retryStream()"
+                        class="mt-2 bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-2 rounded-xl transition-all text-sm">
+                        <i class="fas fa-redo ml-2"></i> إعادة المحاولة
+                    </button>
+                </div>
             </div>
             <!-- Servers Selection -->
             <div id="servers-container" class="mt-6 flex flex-wrap gap-2 justify-center">
                 <!-- سيرفرات البث يتم رندرتها برمجياً -->
             </div>
         </div>
+        <script>
+            atOptions = {
+                'key': 'df048af0c4b200818dc2d1ed23fe278b',
+                'format': 'iframe',
+                'height': 50,
+                'width': 320,
+                'params': {}
+            };
+        </script>
+        <script src="https://www.highperformanceformat.com/df048af0c4b200818dc2d1ed23fe278b/invoke.js"></script>
 
         <!-- Error Container (مخفي افتراضياً) -->
         <div id="error-container"
@@ -167,7 +221,7 @@
             <h3 class="text-xl font-black text-slate-800 mb-2">المباراة غير موجودة</h3>
             <p class="text-slate-500 text-sm mb-6 leading-relaxed">يرجى العودة إلى الصفحة الرئيسية واختيار مباراة صالحة
                 لمتابعة البث المباشر.</p>
-            <a href="./"
+            <a href="../"
                 class="inline-flex items-center gap-2 bg-red-main hover:bg-red-700 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-lg shadow-red-200">
                 <i class="fas fa-arrow-right"></i>
                 العودة للرئيسية
@@ -206,6 +260,9 @@
                 </div>
             </div>
         </article>
+        <script async="async" data-cfasync="false"
+            src="https://pl29749257.effectivecpmnetwork.com/8012d57dcffaca2ccd3f66e0bcc4ca9a/invoke.js"></script>
+        <div id="container-8012d57dcffaca2ccd3f66e0bcc4ca9a"></div>
 
     </main>
 
@@ -227,7 +284,7 @@
     </footer>
 
     <!-- مكتبة البيانات وسكربت صفحة المشاهدة -->
-    <script src="data.js"></script>
+    <script src="../data.js"></script>
     <script>
         // === مزامنة الوقت مع السيرفر لمنع التلاعب بتوقيت الجهاز المحلي ===
         let timeOffsetMs = 0;
@@ -250,16 +307,14 @@
             const serversContainer = document.getElementById('servers-container');
 
             function checkAccessAndRender() {
+                // دائماً أظهر المشغل بغض النظر عن أي شيء
+                if (playerWrapper) playerWrapper.classList.remove('hidden');
+                if (errorContainer) errorContainer.classList.add('hidden');
+
                 if (!match) {
-                    if (playerWrapper) playerWrapper.classList.add('hidden');
-                    if (errorContainer) {
-                        errorContainer.classList.remove('hidden');
-                        const errorTitle = errorContainer.querySelector('h3');
-                        const errorText = errorContainer.querySelector('p');
-                        if (errorTitle) errorTitle.textContent = "المباراة غير موجودة";
-                        if (errorText) errorText.textContent = "يرجى العودة إلى الصفحة الرئيسية واختيار مباراة صالحة لمشاهدة البث المباشر.";
-                    }
-                    document.title = "المباراة غير موجودة | DeidaraTV";
+                    // لا يوجد مباراة بهذا الـ ID - أظهر المشغل فارغاً
+                    if (matchHeading) matchHeading.textContent = `بث مباشر - DeidaraTV`;
+                    document.title = `بث مباشر | DeidaraTV`;
                     return;
                 }
 
@@ -268,36 +323,95 @@
                     return new Date(dateTimeStr);
                 }
 
-                // حساب ما إذا كان البث مفتوحاً حالياً (باستخدام التوقيت الحقيقي العالمي الموحد)
+                // حساب ما إذا كان البث مفتوحاً حالياً
                 const matchTime = parseMatchDate(match.dateTime);
                 const now = getCurrentTime();
                 const diffMs = now - matchTime;
                 const diffMins = diffMs / (1000 * 60);
 
-                // مفتوح فقط من 30 دقيقة قبل المباراة وحتى 2.5 ساعة بعد بدايتها
-                const isLinkActive = (diffMins >= -30 && diffMins <= 150);
-
-                if (!isLinkActive) {
-                    if (playerWrapper) playerWrapper.classList.add('hidden');
-                    if (errorContainer) {
-                        errorContainer.classList.remove('hidden');
-                        const errorTitle = errorContainer.querySelector('h3');
-                        const errorText = errorContainer.querySelector('p');
-                        if (errorTitle) errorTitle.textContent = "البث غير متوفر حالياً";
-                        if (errorText) errorText.textContent = "البث المباشر لهذه المباراة يفتح فقط قبل بدايتها بـ 30 دقيقة وينتهي بانتهاء اللقاء.";
-                    }
-                    document.title = "البث غير متوفر | DeidaraTV";
-                    return;
-                }
-
-                // إذا كانت صالحة، تأكد من إظهار المشغل وإخفاء الخطأ
-                if (playerWrapper) playerWrapper.classList.remove('hidden');
-                if (errorContainer) errorContainer.classList.add('hidden');
-
-                // تحديث عنوان علامة التبويب وعنوان الصفحة
-                const titleText = `بث مباشر: ${match.team1.name} X ${match.team2.name}`;
-                document.title = titleText;
+                // تحديث عنوان الصفحة دائماً
+                const baseTitleText = `بث مباشر مباراة ${match.team1.name} ضد ${match.team2.name} | ${match.league} - DeidaraTV`;
+                document.title = baseTitleText;
                 if (matchHeading) matchHeading.textContent = `بث مباشر: ${match.team1.name} × ${match.team2.name}`;
+
+                // تحديث ميتا الوصف والكلمات الدلالية ديناميكياً
+                const descriptionText = `شاهد البث المباشر لمباراة ${match.team1.name} ضد ${match.team2.name} في ${match.league} بجودة عالية HD بدون تقطيع على DeidaraTV. تابع أهم مباريات اليوم والدوريات العالمية حصرياً.`;
+                const keywordsText = `بث مباشر, مباراة ${match.team1.name}, مباراة ${match.team2.name}, ${match.league}, ${match.channel}, ديدارا تي في, DeidaraTV, يلا شوت`;
+
+                const metaDesc = document.getElementById('seo-description');
+                if (metaDesc) metaDesc.setAttribute('content', descriptionText);
+
+                const metaKeys = document.getElementById('seo-keywords');
+                if (metaKeys) metaKeys.setAttribute('content', keywordsText);
+
+                // تحديث Canonical URL
+                const canonicalLink = document.getElementById('seo-canonical');
+                if (canonicalLink) canonicalLink.setAttribute('href', `https://deidaratv.live/watching-page?id=${match.id}`);
+
+                // تحديث كروت التواصل الاجتماعي
+                const ogTitle = document.getElementById('og-title');
+                if (ogTitle) ogTitle.setAttribute('content', `بث مباشر مباراة ${match.team1.name} ضد ${match.team2.name}`);
+
+                const ogDesc = document.getElementById('og-description');
+                if (ogDesc) ogDesc.setAttribute('content', descriptionText);
+
+                const ogUrl = document.getElementById('og-url');
+                if (ogUrl) ogUrl.setAttribute('content', `https://deidaratv.live/watching-page?id=${match.id}`);
+
+                const twitterTitle = document.getElementById('twitter-title');
+                if (twitterTitle) twitterTitle.setAttribute('content', `بث مباشر مباراة ${match.team1.name} ضد ${match.team2.name}`);
+
+                const twitterDesc = document.getElementById('twitter-description');
+                if (twitterDesc) twitterDesc.setAttribute('content', descriptionText);
+
+                // توليد وإضافة بيانات سكيما JSON-LD للمباراة
+                // إزالة أي سكيما سابقة للمباراة لمنع التكرار عند إعادة الرندر
+                const oldSchema = document.getElementById('match-jsonld-schema');
+                if (oldSchema) oldSchema.remove();
+
+                const schemaData = {
+                    "@context": "https://schema.org",
+                    "@type": "SportsEvent",
+                    "@id": `https://deidaratv.live/watching-page?id=${match.id}`,
+                    "name": `مباراة ${match.team1.name} ضد ${match.team2.name}`,
+                    "description": `بث مباشر لمباراة ${match.team1.name} ضد ${match.team2.name} في بطولة ${match.league}`,
+                    "startDate": match.dateTime,
+                    "homeTeam": {
+                        "@type": "SportsTeam",
+                        "name": match.team1.name,
+                        "logo": match.team1.logo
+                    },
+                    "awayTeam": {
+                        "@type": "SportsTeam",
+                        "name": match.team2.name,
+                        "logo": match.team2.logo
+                    },
+                    "sport": "https://en.wikipedia.org/wiki/Association_football",
+                    "location": {
+                        "@type": "Place",
+                        "name": "World Cup 2026 Venue",
+                        "address": {
+                            "@type": "PostalAddress",
+                            "addressCountry": "North America"
+                        }
+                    },
+                    "competitor": [
+                        {
+                            "@type": "SportsTeam",
+                            "name": match.team1.name
+                        },
+                        {
+                            "@type": "SportsTeam",
+                            "name": match.team2.name
+                        }
+                    ]
+                };
+
+                const script = document.createElement('script');
+                script.id = 'match-jsonld-schema';
+                script.type = 'application/ld+json';
+                script.text = JSON.stringify(schemaData);
+                document.head.appendChild(script);
 
                 // دالة فك التشفير الـ Base64 لروابط البث لحمايتها من الكشط (Scraping)
                 function decodeStreamUrl(encodedStr) {
@@ -374,6 +488,38 @@
             }
 
             syncTimeWithServer();
+        });
+
+        // ===== دالة إعادة المحاولة - تُخفي الـ overlay وتعيد تحميل الـ iframe =====
+        function retryStream() {
+            const overlay = document.getElementById('stream-error-overlay');
+            const iframe = document.getElementById('player-iframe');
+            if (overlay) overlay.classList.add('hidden');
+            if (iframe && iframe.src) {
+                const src = iframe.src;
+                iframe.src = '';
+                setTimeout(() => { iframe.src = src; }, 300);
+            }
+        }
+
+        // ===== كشف فشل تحميل الـ iframe وإظهار overlay الخطأ =====
+        window.addEventListener('load', () => {
+            const iframe = document.getElementById('player-iframe');
+            const overlay = document.getElementById('stream-error-overlay');
+            if (!iframe || !overlay) return;
+
+            // عند فشل تحميل الـ iframe نُظهر الـ overlay
+            iframe.addEventListener('error', () => {
+                overlay.classList.remove('hidden');
+            });
+
+            // عند تحميل الـ iframe بنجاح نُخفي الـ overlay
+            iframe.addEventListener('load', () => {
+                // نتحقق أن الـ src ليس فارغاً (لأن load يُطلق أيضاً عند src="")
+                if (iframe.src && iframe.src !== window.location.href) {
+                    overlay.classList.add('hidden');
+                }
+            });
         });
     </script>
 
