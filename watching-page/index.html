@@ -312,7 +312,9 @@
                 if (errorContainer) errorContainer.classList.add('hidden');
 
                 if (!match) {
-                    // لا يوجد مباراة بهذا الـ ID - أظهر المشغل فارغاً
+                    // لا يوجد مباراة بهذا الـ ID - أخفِ المشغل وأظهر رسالة الخطأ
+                    if (playerWrapper) playerWrapper.classList.add('hidden');
+                    if (errorContainer) errorContainer.classList.remove('hidden');
                     if (matchHeading) matchHeading.textContent = `بث مباشر - DeidaraTV`;
                     document.title = `بث مباشر | DeidaraTV`;
                     return;
