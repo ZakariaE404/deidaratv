@@ -242,6 +242,38 @@
     // تهيئة الفلتر النشط الافتراضي
     let activeFilter = 'today'; // 'today', 'tomorrow', 'yesterday', 'all'
 
+    // === مزامنة الوقت مع السيرفر لمنع التلاعب بتوقيت الجهاز المحلي ===
+    let timeOffsetMs = 0;
+
+    async function syncTimeWithServer() {
+      if (window.location.protocol === 'file:') return;
+      try {
+        const start = performance.now();
+        const response = await fetch(window.location.href, { method: 'HEAD' });
+        const serverDateStr = response.headers.get('Date');
+        if (serverDateStr) {
+          const serverTime = new Date(serverDateStr);
+          const end = performance.now();
+          const latency = (end - start) / 2;
+          const adjustedServerTime = new Date(serverTime.getTime() + latency);
+          timeOffsetMs = adjustedServerTime - new Date();
+          console.log("تمت مزامنة الوقت مع السيرفر. الفارق:", timeOffsetMs, "ملي ثانية");
+          if (typeof renderMatches === 'function') {
+            renderMatches();
+          }
+        }
+      } catch (e) {
+        console.warn("تعذر مزامنة الوقت مع السيرفر، سيتم استخدام وقت الجهاز المحلي:", e);
+      }
+    }
+
+    function getCurrentTime() {
+      return new Date(Date.now() + timeOffsetMs);
+    }
+
+    // بدء المزامنة فوراً عند التحميل
+    syncTimeWithServer();
+
     // إشعار مخصص للمباريات غير النشطة
     function showNotification(message) {
       // إزالة الإشعار القديم إن وجد
@@ -351,7 +383,7 @@
     // حساب حالة المباراة بناءً على التاريخ الحالي والتوقيت الفعلي
     function getMatchStatus(dateTimeStr) {
       const matchTime = parseMatchDate(dateTimeStr);
-      const now = new Date();
+      const now = getCurrentTime();
       const diffMs = now - matchTime;
       const diffMins = diffMs / (1000 * 60);
 
@@ -394,7 +426,7 @@
       const dateStr = `${day} ${months[month]}`;
 
       // تحديد تصنيفات اليوم بناءً على التاريخ المحلي للزائر
-      const now = new Date();
+      const now = getCurrentTime();
       const todayStr = getLocalDateStr(now);
       
       const yesterday = new Date(now);
@@ -427,7 +459,7 @@
 
     // فلترة المباريات بناءً على الفلتر المختار والتوقيت المحلي للزائر
     function filterMatches() {
-      const now = new Date();
+      const now = getCurrentTime();
       const todayStr = getLocalDateStr(now);
       
       const yesterday = new Date(now);
@@ -484,7 +516,7 @@
 
         // حساب ما إذا كان البث مفتوحاً (بناءً على التوقيت الحقيقي العالمي)
         const matchTime = parseMatchDate(match.dateTime);
-        const now = new Date();
+        const now = getCurrentTime();
         const diffMs = now - matchTime;
         const diffMins = diffMs / (1000 * 60);
         

@@ -227,6 +227,13 @@
     <!-- مكتبة البيانات وسكربت صفحة المشاهدة -->
     <script src="data.js"></script>
     <script>
+        // === مزامنة الوقت مع السيرفر لمنع التلاعب بتوقيت الجهاز المحلي ===
+        let timeOffsetMs = 0;
+
+        function getCurrentTime() {
+            return new Date(Date.now() + timeOffsetMs);
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const matchId = parseInt(urlParams.get('id'));
@@ -240,104 +247,131 @@
             const playerIframe = document.getElementById('player-iframe');
             const serversContainer = document.getElementById('servers-container');
 
-            if (!match) {
-                // عرض شاشة الخطأ وإخفاء المشغل في حال عدم العثور على المباراة
-                if (playerWrapper) playerWrapper.classList.add('hidden');
-                if (errorContainer) {
-                    errorContainer.classList.remove('hidden');
-                    const errorTitle = errorContainer.querySelector('h3');
-                    const errorText = errorContainer.querySelector('p');
-                    if (errorTitle) errorTitle.textContent = "المباراة غير موجودة";
-                    if (errorText) errorText.textContent = "يرجى العودة إلى الصفحة الرئيسية واختيار مباراة صالحة لمشاهدة البث المباشر.";
+            function checkAccessAndRender() {
+                if (!match) {
+                    if (playerWrapper) playerWrapper.classList.add('hidden');
+                    if (errorContainer) {
+                        errorContainer.classList.remove('hidden');
+                        const errorTitle = errorContainer.querySelector('h3');
+                        const errorText = errorContainer.querySelector('p');
+                        if (errorTitle) errorTitle.textContent = "المباراة غير موجودة";
+                        if (errorText) errorText.textContent = "يرجى العودة إلى الصفحة الرئيسية واختيار مباراة صالحة لمشاهدة البث المباشر.";
+                    }
+                    document.title = "المباراة غير موجودة | DeidaraTV";
+                    return;
                 }
-                document.title = "المباراة غير موجودة | DeidaraTV";
-                return;
-            }
 
-            // تحويل صيغة التاريخ UTC إلى كائن Date
-            function parseMatchDate(dateTimeStr) {
-                return new Date(dateTimeStr);
-            }
-
-            // حساب ما إذا كان البث مفتوحاً حالياً (باستخدام التوقيت الحقيقي العالمي الموحد)
-            const matchTime = parseMatchDate(match.dateTime);
-            const now = new Date();
-            const diffMs = now - matchTime;
-            const diffMins = diffMs / (1000 * 60);
-            
-            // مفتوح فقط من 30 دقيقة قبل المباراة وحتى 2.5 ساعة بعد بدايتها
-            const isLinkActive = (diffMins >= -30 && diffMins <= 150);
-
-            if (!isLinkActive) {
-                // عرض شاشة البث غير متوفر حالياً وإخفاء المشغل
-                if (playerWrapper) playerWrapper.classList.add('hidden');
-                if (errorContainer) {
-                    errorContainer.classList.remove('hidden');
-                    const errorTitle = errorContainer.querySelector('h3');
-                    const errorText = errorContainer.querySelector('p');
-                    if (errorTitle) errorTitle.textContent = "البث غير متوفر حالياً";
-                    if (errorText) errorText.textContent = "البث المباشر لهذه المباراة يفتح فقط قبل بدايتها بـ 30 دقيقة وينتهي بانتهاء اللقاء.";
+                // تحويل صيغة التاريخ UTC إلى كائن Date
+                function parseMatchDate(dateTimeStr) {
+                    return new Date(dateTimeStr);
                 }
-                document.title = "البث غير متوفر | DeidaraTV";
-                return;
-            }
 
-            // تحديث عنوان علامة التبويب وعنوان الصفحة
-            // التنسيق المطلوب: بث مباشر: team1 X team 2
-            const titleText = `بث مباشر: ${match.team1.name} X ${match.team2.name}`;
-            document.title = titleText;
-            if (matchHeading) matchHeading.textContent = `بث مباشر: ${match.team1.name} × ${match.team2.name}`;
-
-            // دالة فك التشفير الـ Base64 لروابط البث لحمايتها من الكشط (Scraping)
-            function decodeStreamUrl(encodedStr) {
-                try {
-                    return atob(encodedStr);
-                } catch (e) {
-                    console.error("خطأ في فك تشفير رابط البث:", e);
-                    return "";
-                }
-            }
-
-            // رندر أزرار السيرفرات وإعداد الرابط الافتراضي
-            if (serversContainer && match.servers && match.servers.length > 0) {
-                serversContainer.innerHTML = '';
+                // حساب ما إذا كان البث مفتوحاً حالياً (باستخدام التوقيت الحقيقي العالمي الموحد)
+                const matchTime = parseMatchDate(match.dateTime);
+                const now = getCurrentTime();
+                const diffMs = now - matchTime;
+                const diffMins = diffMs / (1000 * 60);
                 
-                // تعيين السيرفر الأول كافتراضي (مفكوك التشفير)
-                if (playerIframe) {
-                    playerIframe.src = decodeStreamUrl(match.servers[0].url);
+                // مفتوح فقط من 30 دقيقة قبل المباراة وحتى 2.5 ساعة بعد بدايتها
+                const isLinkActive = (diffMins >= -30 && diffMins <= 150);
+
+                if (!isLinkActive) {
+                    if (playerWrapper) playerWrapper.classList.add('hidden');
+                    if (errorContainer) {
+                        errorContainer.classList.remove('hidden');
+                        const errorTitle = errorContainer.querySelector('h3');
+                        const errorText = errorContainer.querySelector('p');
+                        if (errorTitle) errorTitle.textContent = "البث غير متوفر حالياً";
+                        if (errorText) errorText.textContent = "البث المباشر لهذه المباراة يفتح فقط قبل بدايتها بـ 30 دقيقة وينتهي بانتهاء اللقاء.";
+                    }
+                    document.title = "البث غير متوفر | DeidaraTV";
+                    return;
                 }
 
-                match.servers.forEach((server, index) => {
-                    const btn = document.createElement('button');
-                    // استخدام نفس التنسيقات السابقة مع إضافة كلاسات التحكم
-                    btn.className = `btn-server px-6 py-2 rounded-xl font-bold text-sm bg-white ${index === 0 ? 'active-server bg-red-main text-white' : ''}`;
-                    btn.textContent = server.name;
-                    
-                    btn.addEventListener('click', () => {
-                        // إزالة كلاس النشط من جميع السيرفرات وتطبيق كلاسات الخلفية البيضاء
-                        const allBtns = serversContainer.querySelectorAll('.btn-server');
-                        allBtns.forEach(b => {
-                            b.classList.remove('active-server', 'bg-red-main', 'text-white');
-                            b.classList.add('bg-white');
-                        });
+                // إذا كانت صالحة، تأكد من إظهار المشغل وإخفاء الخطأ
+                if (playerWrapper) playerWrapper.classList.remove('hidden');
+                if (errorContainer) errorContainer.classList.add('hidden');
 
-                        // إضافة الحالة النشطة للزر المختار
-                        btn.classList.add('active-server', 'bg-red-main', 'text-white');
-                        btn.classList.remove('bg-white');
+                // تحديث عنوان علامة التبويب وعنوان الصفحة
+                const titleText = `بث مباشر: ${match.team1.name} X ${match.team2.name}`;
+                document.title = titleText;
+                if (matchHeading) matchHeading.textContent = `بث مباشر: ${match.team1.name} × ${match.team2.name}`;
+
+                // دالة فك التشفير الـ Base64 لروابط البث لحمايتها من الكشط (Scraping)
+                function decodeStreamUrl(encodedStr) {
+                    try {
+                        return atob(encodedStr);
+                    } catch (e) {
+                        console.error("خطأ في فك تشفير رابط البث:", e);
+                        return "";
+                    }
+                }
+
+                // رندر أزرار السيرفرات وإعداد الرابط الافتراضي
+                if (serversContainer && match.servers && match.servers.length > 0) {
+                    // لمنع تكرار بناء الأزرار عند إعادة الرندر بعد مزامنة الوقت
+                    if (serversContainer.children.length === 0) {
+                        serversContainer.innerHTML = '';
                         
-                        // تحديث مصدر iframe للبث (مفكوك التشفير)
                         if (playerIframe) {
-                            playerIframe.src = decodeStreamUrl(server.url);
+                            playerIframe.src = decodeStreamUrl(match.servers[0].url);
                         }
-                    });
-                    
-                    serversContainer.appendChild(btn);
-                });
-            } else {
-                if (serversContainer) {
-                    serversContainer.innerHTML = `<span class="text-sm text-slate-500 italic">لا تتوفر روابط بث لهذه المباراة حالياً.</span>`;
+
+                        match.servers.forEach((server, index) => {
+                            const btn = document.createElement('button');
+                            btn.className = `btn-server px-6 py-2 rounded-xl font-bold text-sm bg-white ${index === 0 ? 'active-server bg-red-main text-white' : ''}`;
+                            btn.textContent = server.name;
+                            
+                            btn.addEventListener('click', () => {
+                                const allBtns = serversContainer.querySelectorAll('.btn-server');
+                                allBtns.forEach(b => {
+                                    b.classList.remove('active-server', 'bg-red-main', 'text-white');
+                                    b.classList.add('bg-white');
+                                });
+
+                                btn.classList.add('active-server', 'bg-red-main', 'text-white');
+                                btn.classList.remove('bg-white');
+                                
+                                if (playerIframe) {
+                                    playerIframe.src = decodeStreamUrl(server.url);
+                                }
+                            });
+                            
+                            serversContainer.appendChild(btn);
+                        });
+                    }
+                } else {
+                    if (serversContainer) {
+                        serversContainer.innerHTML = `<span class="text-sm text-slate-500 italic">لا تتوفر روابط بث لهذه المباراة حالياً.</span>`;
+                    }
                 }
             }
+
+            // تشغيل الرندر المبدئي بالوقت المحلي للزائر فوراً
+            checkAccessAndRender();
+
+            // مزامنة الوقت بدقة مع السيرفر وتصحيح العرض
+            async function syncTimeWithServer() {
+                if (window.location.protocol === 'file:') return;
+                try {
+                    const start = performance.now();
+                    const response = await fetch(window.location.href, { method: 'HEAD' });
+                    const serverDateStr = response.headers.get('Date');
+                    if (serverDateStr) {
+                        const serverTime = new Date(serverDateStr);
+                        const end = performance.now();
+                        const latency = (end - start) / 2;
+                        const adjustedServerTime = new Date(serverTime.getTime() + latency);
+                        timeOffsetMs = adjustedServerTime - new Date();
+                        console.log("تمت مزامنة وقت المشاهدة مع السيرفر.");
+                        checkAccessAndRender();
+                    }
+                } catch (e) {
+                    console.warn("تعذر التحقق من وقت السيرفر:", e);
+                }
+            }
+
+            syncTimeWithServer();
         });
     </script>
 </body>
