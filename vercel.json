@@ -1,3 +1,14 @@
 {
-  "cleanUrls": true
+  "framework": "nextjs",
+  "regions": ["cdg1"],
+  "crons": [
+    {
+      "path": "/api/sync?mode=daily",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/sync?mode=live",
+      "schedule": "*/5 * * * *"
+    }
+  ]
 }
