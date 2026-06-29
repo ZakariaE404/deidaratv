@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { slugify } from '@/lib/utils'
 
+export const dynamic = 'force-dynamic'
+
 // Guardrail check: API-Football headers
 const API_URL = process.env.NEXT_PUBLIC_API_FOOTBALL_URL || 'https://v3.football.api-sports.io'
 const API_KEY = process.env.API_FOOTBALL_KEY
