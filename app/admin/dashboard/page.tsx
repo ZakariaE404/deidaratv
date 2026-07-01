@@ -578,7 +578,7 @@ export default function AdminDashboardPage() {
                 </div>
               ) : (
                 <div className="text-center py-8 text-xs text-slate-500 font-bold bg-[#070b13]/20 border border-dashed border-brand-border rounded-xl">
-                  لا توجد مباريات معروضة. اختر تاريخاً واضغط على "جلب المباريات".
+                  لا توجد مباريات معروضة. اختر تاريخاً واضغط على &quot;جلب المباريات&quot;.
                 </div>
               )}
             </div>
