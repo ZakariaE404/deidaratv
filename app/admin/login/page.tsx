@@ -19,11 +19,11 @@ export default function AdminLoginPage() {
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession()
       if (session) {
-        router.push('/admin/dashboard')
+        window.location.href = '/admin/dashboard'
       }
     }
     checkSession()
-  }, [router, supabase])
+  }, [supabase])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -40,7 +40,8 @@ export default function AdminLoginPage() {
         throw authError
       }
 
-      router.push('/admin/dashboard')
+      // Use window.location.href to force a full page reload and ensure cookies are sent to middleware
+      window.location.href = '/admin/dashboard'
     } catch (err: any) {
       setError(err.message || 'حدث خطأ أثناء تسجيل الدخول')
     } finally {
