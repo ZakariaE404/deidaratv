@@ -39,7 +39,18 @@ export async function middleware(request: NextRequest) {
   // Refresh the session — important for Server Components
   const {
     data: { user },
+    error
   } = await supabase.auth.getUser()
+
+  console.log("Middleware Auth Debug:", {
+    path: request.nextUrl.pathname,
+    hasUser: !!user,
+    userEmail: user?.email,
+    error: error?.message,
+    cookiesCount: request.cookies.getAll().length,
+    cookiesKeys: request.cookies.getAll().map(c => c.name),
+    supabaseUrl: supabaseUrl ? supabaseUrl.substring(0, 15) + "..." : "undefined"
+  })
 
   // Protect /admin/dashboard — redirect unauthenticated users to login
   if (
