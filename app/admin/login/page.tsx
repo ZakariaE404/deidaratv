@@ -14,17 +14,6 @@ export default function AdminLoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
-  // Redirect if session already exists
-  useEffect(() => {
-    const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (session) {
-        window.location.href = '/admin/dashboard'
-      }
-    }
-    checkSession()
-  }, [supabase])
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)

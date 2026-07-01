@@ -51,6 +51,16 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
+  // Redirect authenticated users trying to access login page back to dashboard
+  if (
+    user &&
+    request.nextUrl.pathname.startsWith('/admin/login')
+  ) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/admin/dashboard'
+    return NextResponse.redirect(url)
+  }
+
   return supabaseResponse
 }
 
