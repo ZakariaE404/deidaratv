@@ -86,6 +86,12 @@ export default function AdminDashboardPage() {
     content: ''
   })
 
+  // API Fixtures Import State
+  const [showApiImport, setShowApiImport] = useState(false)
+  const [apiFixtures, setApiFixtures] = useState<any[]>([])
+  const [fetchingFixtures, setFetchingFixtures] = useState(false)
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0])
+
   // Check auth session
   useEffect(() => {
     const getSessionData = async () => {
@@ -143,6 +149,61 @@ export default function AdminDashboardPage() {
       showNotification(`فشلت المزامنة: ${err.message}`, 'error')
     } finally {
       setSyncing(false)
+    }
+  }
+
+  const fetchApiFixtures = async () => {
+    setFetchingFixtures(true)
+    setApiFixtures([])
+    try {
+      const res = await fetch(`/api/fixtures?date=${selectedDate}`)
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Failed to fetch fixtures')
+      setApiFixtures(data.fixtures || [])
+      showNotification(`تم العثور على ${data.fixtures?.length || 0} مباراة لهذه التاريخ.`, 'success')
+    } catch (err: any) {
+      showNotification(`خطأ في جلب المباريات: ${err.message}`, 'error')
+    } finally {
+      setFetchingFixtures(false)
+    }
+  }
+
+  const handleImportMatch = async (fixture: any) => {
+    try {
+      const alreadyExists = matches.some(m => m.api_football_id === fixture.api_football_id)
+      if (alreadyExists) {
+        showNotification('هذه المباراة مضافة بالفعل في النظام!', 'error')
+        return
+      }
+
+      const generatedSlug = `${slugify(fixture.team_a)}-vs-${slugify(fixture.team_b)}-${fixture.api_football_id}`
+
+      const { error } = await supabase
+        .from('matches')
+        .insert({
+          api_football_id: fixture.api_football_id,
+          slug: generatedSlug,
+          team_a: fixture.team_a,
+          team_b: fixture.team_b,
+          team_a_logo: fixture.team_a_logo || null,
+          team_b_logo: fixture.team_b_logo || null,
+          score_a: Number(fixture.score_a),
+          score_b: Number(fixture.score_b),
+          status: fixture.status === 'FT' ? 'FT' : (fixture.status === 'NS' ? 'NS' : 'LIVE'),
+          start_time: fixture.start_time,
+          league: fixture.league,
+          channel: 'beIN Sports HD 1',
+          servers: [{ name: 'سيرفر 1', url: '' }],
+          is_manual: false
+        })
+
+      if (error) throw error
+
+      showNotification(`تم إضافة مباراة ${fixture.team_a} ضد ${fixture.team_b} بنجاح!`, 'success')
+      setApiFixtures(prev => prev.filter(f => f.api_football_id !== fixture.api_football_id))
+      fetchData()
+    } catch (err: any) {
+      showNotification(`فشل إضافة المباراة: ${err.message}`, 'error')
     }
   }
 
@@ -403,17 +464,125 @@ export default function AdminDashboardPage() {
       {activeTab === 'matches' && (
         <div className="flex flex-col gap-6">
           
-          {/* Header & Add Button */}
-          <div className="flex justify-between items-center">
+          {/* Header & Buttons */}
+          <div className="flex flex-wrap justify-between items-center gap-3">
             <h2 className="text-lg font-extrabold text-white">قائمة مواجهات اليوم</h2>
-            <button
-              onClick={() => setShowAddMatch(!showAddMatch)}
-              className="bg-brand-primary hover:bg-rose-700 text-white px-4 py-2.5 rounded-xl text-xs md:text-sm font-bold flex items-center gap-2 transition-all"
-            >
-              <Plus className="w-4 h-4" />
-              إضافة مباراة يدوية
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => {
+                  setShowApiImport(!showApiImport)
+                  setShowAddMatch(false)
+                }}
+                className={`px-4 py-2.5 rounded-xl text-xs md:text-sm font-bold flex items-center gap-2 transition-all border ${
+                  showApiImport
+                    ? 'bg-brand-primary text-white border-transparent'
+                    : 'bg-[#1e293b] hover:bg-[#28374f] border-slate-700 text-brand-accent'
+                }`}
+              >
+                <Plus className="w-4 h-4" />
+                استيراد من الـ API
+              </button>
+
+              <button
+                onClick={() => {
+                  setShowAddMatch(!showAddMatch)
+                  setShowApiImport(false)
+                }}
+                className={`px-4 py-2.5 rounded-xl text-xs md:text-sm font-bold flex items-center gap-2 transition-all border ${
+                  showAddMatch
+                    ? 'bg-brand-primary text-white border-transparent'
+                    : 'bg-[#1e293b] hover:bg-[#28374f] border-slate-700 text-slate-200'
+                }`}
+              >
+                <Plus className="w-4 h-4" />
+                إضافة مباراة يدوية
+              </button>
+            </div>
           </div>
+
+          {/* API Import Panel */}
+          {showApiImport && (
+            <div className="glass-card rounded-2xl p-6 border border-brand-border flex flex-col gap-5 animate-fade-in">
+              <h3 className="font-extrabold text-slate-200 border-b border-brand-border pb-2 text-sm md:text-base">استيراد المباريات من API-Football</h3>
+              
+              <div className="flex flex-wrap items-end gap-4">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs text-slate-400 font-bold">تاريخ المباريات</label>
+                  <input
+                    type="date"
+                    value={selectedDate}
+                    onChange={(e) => setSelectedDate(e.target.value)}
+                    className="bg-[#070b13] border border-brand-border rounded-xl py-2.5 px-4 text-xs md:text-sm text-slate-200 focus:outline-none focus:border-brand-primary"
+                  />
+                </div>
+                
+                <button
+                  type="button"
+                  onClick={fetchApiFixtures}
+                  disabled={fetchingFixtures}
+                  className="bg-brand-primary hover:bg-rose-700 disabled:opacity-50 text-white font-bold px-6 py-2.5 rounded-xl text-xs md:text-sm flex items-center gap-2 transition-all"
+                >
+                  <RefreshCw className={`w-4 h-4 ${fetchingFixtures ? 'animate-spin' : ''}`} />
+                  جلب المباريات
+                </button>
+              </div>
+
+              {/* API Matches List */}
+              {fetchingFixtures ? (
+                <div className="text-center py-8 text-xs text-slate-500 font-bold">جاري تحميل المباريات من API-Football...</div>
+              ) : apiFixtures.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[450px] overflow-y-auto pr-1">
+                  {apiFixtures.map((fixture) => {
+                    const alreadyAdded = matches.some(m => m.api_football_id === fixture.api_football_id)
+                    return (
+                      <div key={fixture.api_football_id} className="bg-[#070b13]/80 border border-brand-border/60 rounded-xl p-4 flex flex-col justify-between gap-3 hover:border-brand-border transition-colors">
+                        <div className="flex justify-between items-start gap-2">
+                          <span className="text-[10px] text-slate-500 font-extrabold bg-[#1e293b] px-2 py-0.5 rounded-md">
+                            {fixture.league}
+                          </span>
+                          <span className="text-[10px] text-slate-400">
+                            {new Date(fixture.start_time).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                        </div>
+
+                        <div className="flex justify-between items-center my-1.5">
+                          <div className="flex items-center gap-2">
+                            {fixture.team_a_logo && <img src={fixture.team_a_logo} className="w-5 h-5 object-contain" alt="" />}
+                            <span className="text-xs font-bold text-slate-200">{fixture.team_a}</span>
+                          </div>
+                          <span className="text-xs text-slate-500 font-extrabold">ضد</span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-bold text-slate-200">{fixture.team_b}</span>
+                            {fixture.team_b_logo && <img src={fixture.team_b_logo} className="w-5 h-5 object-contain" alt="" />}
+                          </div>
+                        </div>
+
+                        <div className="flex justify-between items-center border-t border-brand-border/30 pt-2.5">
+                          <span className="text-[10px] text-slate-500">حالة: {fixture.status} | {fixture.score_a} - {fixture.score_b}</span>
+                          <button
+                            type="button"
+                            disabled={alreadyAdded}
+                            onClick={() => handleImportMatch(fixture)}
+                            className={`px-3 py-1.5 rounded-lg text-[10px] font-black transition-all ${
+                              alreadyAdded 
+                                ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                                : 'bg-brand-primary hover:bg-rose-700 text-white'
+                            }`}
+                          >
+                            {alreadyAdded ? 'تمت الإضافة' : 'إضافة لجدول المباريات'}
+                          </button>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-xs text-slate-500 font-bold bg-[#070b13]/20 border border-dashed border-brand-border rounded-xl">
+                  لا توجد مباريات معروضة. اختر تاريخاً واضغط على "جلب المباريات".
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Add Match Modal Form */}
           {showAddMatch && (
