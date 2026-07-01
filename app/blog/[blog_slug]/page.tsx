@@ -98,6 +98,17 @@ export default async function BlogPage({ params }: BlogPageProps) {
         </div>
       </section>
 
+      {/* Blog Image Banner */}
+      {blog.image_url && (
+        <div className="rounded-3xl overflow-hidden border border-brand-border aspect-[21/9] w-full bg-slate-950/40 relative shadow-2xl">
+          <img
+            src={blog.image_url}
+            alt={blog.title}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      )}
+
       {/* Article Reader Content */}
       <article className="glass-card rounded-3xl p-6 md:p-10 border border-brand-border leading-relaxed text-slate-200">
         {/* We format paragraphs nicely. If content contains HTML we render it directly. */}

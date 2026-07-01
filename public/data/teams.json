@@ -1,0 +1,220 @@
+{
+  "default_flag": "https://flagcdn.com/w160/un.png",
+  "leagues": [
+    {
+      "id": "world_cup",
+      "name": "كأس العالم 2026",
+      "teams": [
+        { "name": "المغرب", "logo": "https://flagcdn.com/w160/ma.png" },
+        { "name": "البرازيل", "logo": "https://flagcdn.com/w160/br.png" },
+        { "name": "الأرجنتين", "logo": "https://flagcdn.com/w160/ar.png" },
+        { "name": "فرنسا", "logo": "https://flagcdn.com/w160/fr.png" },
+        { "name": "إسبانيا", "logo": "https://flagcdn.com/w160/es.png" },
+        { "name": "إنجلترا", "logo": "https://flagcdn.com/w160/gb-eng.png" },
+        { "name": "البرتغال", "logo": "https://flagcdn.com/w160/pt.png" },
+        { "name": "ألمانيا", "logo": "https://flagcdn.com/w160/de.png" },
+        { "name": "إيطاليا", "logo": "https://flagcdn.com/w160/it.png" },
+        { "name": "هولندا", "logo": "https://flagcdn.com/w160/nl.png" },
+        { "name": "بلجيكا", "logo": "https://flagcdn.com/w160/be.png" },
+        { "name": "كرواتيا", "logo": "https://flagcdn.com/w160/hr.png" },
+        { "name": "الأوروغواي", "logo": "https://flagcdn.com/w160/uy.png" },
+        { "name": "كولومبيا", "logo": "https://flagcdn.com/w160/co.png" },
+        { "name": "المكسيك", "logo": "https://flagcdn.com/w160/mx.png" },
+        { "name": "الولايات المتحدة", "logo": "https://flagcdn.com/w160/us.png" },
+        { "name": "كندا", "logo": "https://flagcdn.com/w160/ca.png" },
+        { "name": "السنغال", "logo": "https://flagcdn.com/w160/sn.png" },
+        { "name": "الكاميرون", "logo": "https://flagcdn.com/w160/cm.png" },
+        { "name": "اليابان", "logo": "https://flagcdn.com/w160/jp.png" },
+        { "name": "كوريا الجنوبية", "logo": "https://flagcdn.com/w160/kr.png" },
+        { "name": "سويسرا", "logo": "https://flagcdn.com/w160/ch.png" },
+        { "name": "التشيك", "logo": "https://flagcdn.com/w160/cz.png" },
+        { "name": "البوسنة والهرسك", "logo": "https://flagcdn.com/w160/ba.png" },
+        { "name": "باراغواي", "logo": "https://flagcdn.com/w160/py.png" },
+        { "name": "قطر", "logo": "https://flagcdn.com/w160/qa.png" },
+        { "name": "جنوب أفريقيا", "logo": "https://flagcdn.com/w160/za.png" }
+      ]
+    },
+    {
+      "id": "premier_league",
+      "name": "الدوري الإنجليزي الممتاز",
+      "teams": [
+        { "name": "مانشستر سيتي", "logo": "https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg" },
+        { "name": "ليفربول", "logo": "https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg" },
+        { "name": "أرسنال", "logo": "https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg" },
+        { "name": "مانشستر يونايتد", "logo": "https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg" },
+        { "name": "تشيلسي", "logo": "https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg" },
+        { "name": "توتنهام", "logo": "https://upload.wikimedia.org/wikipedia/en/b/b4/Tottenham_Hotspur.svg" },
+        { "name": "أستون فيلا", "logo": "https://upload.wikimedia.org/wikipedia/en/f/f9/Aston_Villa_FC_crest_%282016%29.svg" },
+        { "name": "نيوكاسل يونايتد", "logo": "https://upload.wikimedia.org/wikipedia/en/5/56/Newcastle_United_FC_crest.svg" },
+        { "name": "وست هام", "logo": "https://upload.wikimedia.org/wikipedia/en/c/c2/West_Ham_United_FC_logo.svg" },
+        { "name": "برايتون", "logo": "https://upload.wikimedia.org/wikipedia/en/f/fd/Brighton_%26_Hove_Albion_FC_logo.svg" },
+        { "name": "إيفرتون", "logo": "https://upload.wikimedia.org/wikipedia/en/7/7c/Everton_FC_logo.svg" },
+        { "name": "ليستر سيتي", "logo": "https://upload.wikimedia.org/wikipedia/en/2/2d/Leicester_City_FC_logo.svg" }
+      ]
+    },
+    {
+      "id": "la_liga",
+      "name": "الدوري الإسباني",
+      "teams": [
+        { "name": "ريال مدريد", "logo": "https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg" },
+        { "name": "برشلونة", "logo": "https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona.svg" },
+        { "name": "أتلتيكو مدريد", "logo": "https://upload.wikimedia.org/wikipedia/en/f/f4/Atletico_Madrid_2017_logo.svg" },
+        { "name": "ريال سوسيداد", "logo": "https://upload.wikimedia.org/wikipedia/en/f/f1/Real_Sociedad_logo.svg" },
+        { "name": "إشبيلية", "logo": "https://upload.wikimedia.org/wikipedia/en/3/3b/Sevilla_FC_logo.svg" },
+        { "name": "ريال بيتيس", "logo": "https://upload.wikimedia.org/wikipedia/en/1/13/Real_Betis.svg" },
+        { "name": "فالنسيا", "logo": "https://upload.wikimedia.org/wikipedia/en/c/ce/Valenciacf.svg" },
+        { "name": "فياريال", "logo": "https://upload.wikimedia.org/wikipedia/en/7/70/Villarreal_CF_logo.svg" },
+        { "name": "أتلتيك بيلباو", "logo": "https://upload.wikimedia.org/wikipedia/en/9/98/Club_Athletic_Bilbao_logo.svg" },
+        { "name": "جيرونا", "logo": "https://upload.wikimedia.org/wikipedia/en/9/94/Girona_FC_logo.svg" }
+      ]
+    },
+    {
+      "id": "serie_a",
+      "name": "الدوري الإيطالي",
+      "teams": [
+        { "name": "إنتر ميلان", "logo": "https://upload.wikimedia.org/wikipedia/commons/0/05/FC_Internazionale_Milano_2021_logo.svg" },
+        { "name": "إيه سي ميلان", "logo": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Logo_of_AC_Milan.svg" },
+        { "name": "يوفنتوس", "logo": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Juventus_FC_2017_icon_%28black%29.svg" },
+        { "name": "نابولي", "logo": "https://upload.wikimedia.org/wikipedia/commons/2/2d/SSC_Napoli_2024.svg" },
+        { "name": "روما", "logo": "https://upload.wikimedia.org/wikipedia/en/f/f7/AS_Roma_logo_%282017%29.svg" },
+        { "name": "لاتسيو", "logo": "https://upload.wikimedia.org/wikipedia/en/c/ce/S.S._Lazio_badge.svg" },
+        { "name": "أتالانتا", "logo": "https://upload.wikimedia.org/wikipedia/en/6/66/Atalanta_BC_logo.svg" },
+        { "name": "فيورنتينا", "logo": "https://upload.wikimedia.org/wikipedia/commons/7/79/ACF_Fiorentina_2022_logo.svg" }
+      ]
+    },
+    {
+      "id": "bundesliga",
+      "name": "الدوري الألماني",
+      "teams": [
+        { "name": "بايرن ميونخ", "logo": "https://upload.wikimedia.org/wikipedia/commons/1/1b/FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg" },
+        { "name": "بوروسيا دورتموند", "logo": "https://upload.wikimedia.org/wikipedia/commons/6/67/Borussia_Dortmund_logo.svg" },
+        { "name": "باير ليفركوزن", "logo": "https://upload.wikimedia.org/wikipedia/en/5/59/Bayer_04_Leverkusen_logo.svg" },
+        { "name": "لايبزيغ", "logo": "https://upload.wikimedia.org/wikipedia/en/0/04/RB_Leipzig_2014_logo.svg" },
+        { "name": "آينتراخت فرانكفورت", "logo": "https://upload.wikimedia.org/wikipedia/commons/0/04/Eintracht_Frankfurt_Logo.svg" },
+        { "name": "شتوتغارت", "logo": "https://upload.wikimedia.org/wikipedia/commons/e/eb/VfB_Stuttgart_1893_Logo.svg" }
+      ]
+    },
+    {
+      "id": "ligue_1",
+      "name": "الدوري الفرنسي",
+      "teams": [
+        { "name": "باريس سان جيرمان", "logo": "https://upload.wikimedia.org/wikipedia/en/a/a7/Paris_Saint-Germain_F.C..svg" },
+        { "name": "مارسيليا", "logo": "https://upload.wikimedia.org/wikipedia/commons/e/ec/Olympique_Marseille_logo.svg" },
+        { "name": "موناكو", "logo": "https://upload.wikimedia.org/wikipedia/en/b/ba/AS_Monaco_FC.svg" },
+        { "name": "ليون", "logo": "https://upload.wikimedia.org/wikipedia/en/c/c6/Olympique_Lyonnais.svg" },
+        { "name": "ليل", "logo": "https://upload.wikimedia.org/wikipedia/en/3/3f/Losc_lille_logo_2018.svg" },
+        { "name": "لانس", "logo": "https://upload.wikimedia.org/wikipedia/en/c/cc/Racing_Club_de_Lens_logo.svg" }
+      ]
+    },
+    {
+      "id": "botola_pro",
+      "name": "البطولة الوطنية المغربية",
+      "teams": [
+        { "name": "الرجاء الرياضي", "logo": "https://upload.wikimedia.org/wikipedia/commons/1/17/Raja_Club_Athletic_logo.png" },
+        { "name": "الوداد الرياضي", "logo": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Wydad_Athletic_Club_logo.png" },
+        { "name": "الجيش الملكي", "logo": "https://upload.wikimedia.org/wikipedia/commons/1/1b/Association_Sportive_des_Forces_Arm%C3%A9es_Royales_de_Rabat.png" },
+        { "name": "نهضة بركان", "logo": "https://upload.wikimedia.org/wikipedia/commons/5/52/Renaissance_Sportive_de_Berkane.png" },
+        { "name": "الفتح الرباطي", "logo": "https://upload.wikimedia.org/wikipedia/commons/d/de/Fath_Union_Sport.png" },
+        { "name": "اتحاد طنجة", "logo": "https://upload.wikimedia.org/wikipedia/commons/1/14/Ittihad_Riadhi_de_Tanger_logo.png" },
+        { "name": "المغرب التطواني", "logo": "https://upload.wikimedia.org/wikipedia/commons/d/dd/Moghreb_T%C3%A9touan_logo.png" },
+        { "name": "حسنية أكادير", "logo": "https://upload.wikimedia.org/wikipedia/commons/a/af/Hassania_Union_Sport_d%27Agadir.png" },
+        { "name": "المغرب الفاسي", "logo": "https://upload.wikimedia.org/wikipedia/commons/d/df/MAS_F%C3%A8s.png" },
+        { "name": "أولمبيك آسفي", "logo": "https://upload.wikimedia.org/wikipedia/commons/2/2f/Olympique_Safi.png" }
+      ]
+    },
+    {
+      "id": "saudi_pro",
+      "name": "الدوري السعودي للمحترفين",
+      "teams": [
+        { "name": "الهلال", "logo": "https://upload.wikimedia.org/wikipedia/en/e/e1/Al_Hilal_SFC_logo.svg" },
+        { "name": "النصر", "logo": "https://upload.wikimedia.org/wikipedia/en/a/a3/Al-Nassr_FC_logo.svg" },
+        { "name": "الاتحاد", "logo": "https://upload.wikimedia.org/wikipedia/en/b/b8/Al_Ittihad_Club_Logo_%28Saudi_Arabia%29.svg" },
+        { "name": "الأهلي", "logo": "https://upload.wikimedia.org/wikipedia/en/6/63/Al-Ahli_Saudi_FC_logo.svg" },
+        { "name": "الشباب", "logo": "https://upload.wikimedia.org/wikipedia/en/9/9f/Al-Shabab_FC_%28Riyadh%29_logo.svg" },
+        { "name": "الاتفاق", "logo": "https://upload.wikimedia.org/wikipedia/en/b/bf/Al-Ettifaq_FC_logo.svg" },
+        { "name": "التعاون", "logo": "https://upload.wikimedia.org/wikipedia/en/6/68/Al-Taawoun_FC_logo.svg" }
+      ]
+    },
+    {
+      "id": "khalij",
+      "name": "دوريات الخليج العربي",
+      "teams": [
+        { "name": "العين الإماراتي", "logo": "https://upload.wikimedia.org/wikipedia/en/e/ec/Al_Ain_FC_logo.svg" },
+        { "name": "شباب الأهلي الإماراتي", "logo": "https://upload.wikimedia.org/wikipedia/en/a/ae/Shabab_Al-Ahli_FC.svg" },
+        { "name": "الشارقة الإماراتي", "logo": "https://upload.wikimedia.org/wikipedia/en/2/2f/Sharjah_FC_logo.svg" },
+        { "name": "الجزيرة الإماراتي", "logo": "https://upload.wikimedia.org/wikipedia/en/d/db/Al_Jazira_Club.svg" },
+        { "name": "السد القطري", "logo": "https://upload.wikimedia.org/wikipedia/en/e/e6/Al_Sadd_SC_logo.svg" },
+        { "name": "الدحيل القطري", "logo": "https://upload.wikimedia.org/wikipedia/en/5/52/Al-Duhail_SC_logo.svg" },
+        { "name": "الريان القطري", "logo": "https://upload.wikimedia.org/wikipedia/en/7/7b/Al_Rayyan_SC_logo.svg" },
+        { "name": "العربي القطري", "logo": "https://upload.wikimedia.org/wikipedia/en/c/c5/Al-Arabi_SC_%28Qatar%29_logo.svg" }
+      ]
+    },
+    {
+      "id": "egyptian_league",
+      "name": "الدوري المصري والفرق العربية",
+      "teams": [
+        { "name": "الأهلي المصري", "logo": "https://upload.wikimedia.org/wikipedia/en/8/8c/Al_Ahly_SC_logo.svg" },
+        { "name": "الزمالك المصري", "logo": "https://upload.wikimedia.org/wikipedia/en/0/04/ZamalekSC-Logo.svg" },
+        { "name": "بيراميدز المصري", "logo": "https://upload.wikimedia.org/wikipedia/en/7/70/Pyramids_FC_logo.svg" },
+        { "name": "الترجي التونسي", "logo": "https://upload.wikimedia.org/wikipedia/commons/e/e6/Esp%C3%A9rance_Sportive_de_Tunis.png" },
+        { "name": "النجم الساحلي التونسي", "logo": "https://upload.wikimedia.org/wikipedia/commons/4/4e/Etoile_Sportive_du_Sahel.png" },
+        { "name": "شباب بلوزداد الجزائري", "logo": "https://upload.wikimedia.org/wikipedia/commons/f/ff/CR_Belouizdad.png" },
+        { "name": "شبيبة القبائل الجزائري", "logo": "https://upload.wikimedia.org/wikipedia/commons/f/f6/JS_Kabylie.png" }
+      ]
+    },
+    {
+      "id": "usa",
+      "name": "الدوري الأمريكي MLS",
+      "teams": [
+        { "name": "إنتر ميامي", "logo": "https://upload.wikimedia.org/wikipedia/en/1/1c/Inter_Miami_CF_logo.svg" },
+        { "name": "لوس أنجلوس غالاكسي", "logo": "https://upload.wikimedia.org/wikipedia/en/1/1a/Los_Angeles_Galaxy_logo.svg" },
+        { "name": "لوس أنجلوس إف سي", "logo": "https://upload.wikimedia.org/wikipedia/en/a/a4/Los_Angeles_FC_logo.svg" },
+        { "name": "نيويورك سيتي", "logo": "https://upload.wikimedia.org/wikipedia/en/2/23/New_York_City_FC_logo.svg" },
+        { "name": "siyatil", "logo": "https://upload.wikimedia.org/wikipedia/en/b/b5/Seattle_Sounders_FC_logo_%282024%29.svg" },
+        { "name": "أورلاندو سيتي", "logo": "https://upload.wikimedia.org/wikipedia/en/7/7a/Orlando_City_SC_logo.svg" }
+      ]
+    },
+    {
+      "id": "brazil",
+      "name": "الدوري البرازيلي",
+      "teams": [
+        { "name": "فلامينغو", "logo": "https://upload.wikimedia.org/wikipedia/commons/2/2e/Esporte_Clube_Flamengo_logo.png" },
+        { "name": "بالميراس", "logo": "https://upload.wikimedia.org/wikipedia/commons/1/10/Palmeiras_logo.svg" },
+        { "name": "ساو باولو", "logo": "https://upload.wikimedia.org/wikipedia/commons/6/6f/Sao_Paulo_FC.svg" },
+        { "name": "كورينثيانز", "logo": "https://upload.wikimedia.org/wikipedia/en/5/5a/Sport_Club_Corinthians_Paulista_crest.svg" },
+        { "name": "فلومينينسي", "logo": "https://upload.wikimedia.org/wikipedia/en/b/bc/Fluminense_FC_crest.svg" },
+        { "name": "بوتافوغو", "logo": "https://upload.wikimedia.org/wikipedia/commons/f/f9/Botafogo_de_Futebol_e_Regatas_logo.svg" },
+        { "name": "غريميو", "logo": "https://upload.wikimedia.org/wikipedia/de/c/cd/Gremio_FBPA.svg" },
+        { "name": "سانتوس", "logo": "https://upload.wikimedia.org/wikipedia/commons/3/35/Santos_logo.svg" }
+      ]
+    },
+    {
+      "id": "national_teams",
+      "name": "المنتخبات الوطنية والوديات",
+      "teams": [
+        { "name": "المغرب", "logo": "https://flagcdn.com/w160/ma.png" },
+        { "name": "مصر", "logo": "https://flagcdn.com/w160/eg.png" },
+        { "name": "تونس", "logo": "https://flagcdn.com/w160/tn.png" },
+        { "name": "الجزائر", "logo": "https://flagcdn.com/w160/dz.png" },
+        { "name": "السعودية", "logo": "https://flagcdn.com/w160/sa.png" },
+        { "name": "قطر", "logo": "https://flagcdn.com/w160/qa.png" },
+        { "name": "العراق", "logo": "https://flagcdn.com/w160/iq.png" },
+        { "name": "الإمارات", "logo": "https://flagcdn.com/w160/ae.png" },
+        { "name": "الأردن", "logo": "https://flagcdn.com/w160/jo.png" },
+        { "name": "فرنسا", "logo": "https://flagcdn.com/w160/fr.png" },
+        { "name": "البرازيل", "logo": "https://flagcdn.com/w160/br.png" },
+        { "name": "الأرجنتين", "logo": "https://flagcdn.com/w160/ar.png" },
+        { "name": "إسبانيا", "logo": "https://flagcdn.com/w160/es.png" },
+        { "name": "إنجلترا", "logo": "https://flagcdn.com/w160/gb-eng.png" },
+        { "name": "البرتغال", "logo": "https://flagcdn.com/w160/pt.png" },
+        { "name": "ألمانيا", "logo": "https://flagcdn.com/w160/de.png" },
+        { "name": "إيطاليا", "logo": "https://flagcdn.com/w160/it.png" },
+        { "name": "كرواتيا", "logo": "https://flagcdn.com/w160/hr.png" },
+        { "name": "بلجيكا", "logo": "https://flagcdn.com/w160/be.png" },
+        { "name": "هولندا", "logo": "https://flagcdn.com/w160/nl.png" },
+        { "name": "السنغال", "logo": "https://flagcdn.com/w160/sn.png" },
+        { "name": "الولايات المتحدة", "logo": "https://flagcdn.com/w160/us.png" }
+      ]
+    }
+  ]
+}

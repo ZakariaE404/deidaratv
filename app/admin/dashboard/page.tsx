@@ -16,8 +16,13 @@ import {
   Plus, 
   Trash2, 
   Check, 
-  AlertCircle 
+  AlertCircle,
+  Activity,
+  Calendar as CalendarIcon,
+  Image as ImageIcon,
+  Flame
 } from 'lucide-react'
+import TeamSearchInput from '@/components/TeamSearchInput'
 
 interface Match {
   id: string
@@ -43,6 +48,7 @@ interface Blog {
   slug: string
   content: string
   meta_description?: string | null
+  image_url?: string | null
   created_at: string
 }
 
@@ -58,9 +64,10 @@ export default function AdminDashboardPage() {
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null)
   const [syncing, setSyncing] = useState(false)
 
-  // Matches State
+  // Matches State & Filter
   const [matches, setMatches] = useState<Match[]>([])
   const [editingMatch, setEditingMatch] = useState<Partial<Match> | null>(null)
+  const [matchFilter, setMatchFilter] = useState<'all' | 'live' | 'ns' | 'ft'>('all')
   
   // Custom Match form state
   const [showAddMatch, setShowAddMatch] = useState(false)
@@ -83,7 +90,8 @@ export default function AdminDashboardPage() {
   const [newBlog, setNewBlog] = useState({
     title: '',
     meta_description: '',
-    content: ''
+    content: '',
+    image_url: ''
   })
 
   // API Fixtures Import State
@@ -345,12 +353,13 @@ export default function AdminDashboardPage() {
           slug: generatedSlug,
           meta_description: newBlog.meta_description,
           content: cleanContent,
+          image_url: newBlog.image_url || null,
         })
 
       if (error) throw error
 
       showNotification('تم نشر المقال بنجاح', 'success')
-      setNewBlog({ title: '', meta_description: '', content: '' })
+      setNewBlog({ title: '', meta_description: '', content: '', image_url: '' })
       fetchData()
     } catch (err: any) {
       showNotification(`فشل نشر المقال: ${err.message}`, 'error')
@@ -382,6 +391,11 @@ export default function AdminDashboardPage() {
   }
 
   if (!session) return null
+
+  // Compute Dashboard Stats
+  const totalMatchesCount = matches.length
+  const liveMatchesCount = matches.filter(m => m.status === 'LIVE').length
+  const totalBlogsCount = blogs.length
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10 flex flex-col gap-8" dir="rtl">
@@ -419,6 +433,45 @@ export default function AdminDashboardPage() {
             <LogOut className="w-4 h-4" />
             خروج
           </button>
+        </div>
+      </div>
+
+      {/* Intelligence Stats Dashboard Panel */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="glass-card rounded-2xl p-5 border border-brand-border/65 flex items-center gap-4 bg-gradient-to-br from-slate-900/50 to-[#070b13]/80">
+          <div className="p-3 bg-brand-primary/10 rounded-xl text-brand-primary">
+            <Trophy className="w-6 h-6" />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-[10px] text-slate-455 font-bold">إجمالي مواجهات اليوم</span>
+            <span className="text-xl font-black text-white">{totalMatchesCount}</span>
+          </div>
+        </div>
+
+        <div className="glass-card rounded-2xl p-5 border border-brand-border/65 flex items-center gap-4 bg-gradient-to-br from-slate-900/50 to-[#070b13]/80">
+          <div className="p-3 bg-emerald-500/10 rounded-xl text-emerald-450 relative">
+            <Activity className="w-6 h-6 animate-pulse" />
+            {liveMatchesCount > 0 && (
+              <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping" />
+            )}
+          </div>
+          <div className="flex flex-col">
+            <span className="text-[10px] text-slate-455 font-bold">المباريات المباشرة الآن</span>
+            <span className="text-xl font-black text-emerald-400 flex items-center gap-1.5">
+              {liveMatchesCount}
+              {liveMatchesCount > 0 && <span className="text-xs bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded-md font-bold animate-pulse">LIVE</span>}
+            </span>
+          </div>
+        </div>
+
+        <div className="glass-card rounded-2xl p-5 border border-brand-border/65 flex items-center gap-4 bg-gradient-to-br from-slate-900/50 to-[#070b13]/80">
+          <div className="p-3 bg-brand-accent/10 rounded-xl text-brand-accent">
+            <FileText className="w-6 h-6" />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-[10px] text-slate-455 font-bold">إجمالي الأخبار والتقارير</span>
+            <span className="text-xl font-black text-white">{totalBlogsCount}</span>
+          </div>
         </div>
       </div>
 
@@ -586,48 +639,50 @@ export default function AdminDashboardPage() {
 
           {/* Add Match Modal Form */}
           {showAddMatch && (
-            <form onSubmit={handleCreateMatch} className="glass-card rounded-2xl p-6 border border-brand-border flex flex-col gap-4 animate-fade-in">
+            <form onSubmit={handleCreateMatch} className="glass-card rounded-2xl p-6 border border-brand-border flex flex-col gap-5 animate-fade-in">
               <h3 className="font-extrabold text-slate-200 border-b border-brand-border pb-2 text-sm md:text-base">إضافة مواجهة جديدة (يدوياً)</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <TeamSearchInput
+                  value={newMatch.team_a}
+                  logoValue={newMatch.team_a_logo}
+                  onChange={(name, logo) => setNewMatch(prev => ({ ...prev, team_a: name, team_a_logo: logo }))}
+                  label="الفريق أ (المستضيف)"
+                  placeholder="ابحث عن الفريق أ أو اكتبه يدوياً..."
+                />
+                
+                <TeamSearchInput
+                  value={newMatch.team_b}
+                  logoValue={newMatch.team_b_logo}
+                  onChange={(name, logo) => setNewMatch(prev => ({ ...prev, team_b: name, team_b_logo: logo }))}
+                  label="الفريق ب (الضيف)"
+                  placeholder="ابحث عن الفريق ب أو اكتبه يدوياً..."
+                />
+
                 <div className="flex flex-col gap-1">
-                  <label className="text-xs text-slate-400 font-bold">الفريق أ (المستضيف)</label>
-                  <input
-                    type="text"
-                    required
-                    value={newMatch.team_a}
-                    onChange={(e) => setNewMatch(prev => ({ ...prev, team_a: e.target.value }))}
-                    className="w-full bg-[#070b13] border border-brand-border rounded-xl py-2 px-3 text-xs md:text-sm text-slate-200"
-                  />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs text-slate-400 font-bold">الفريق ب (الضيف)</label>
-                  <input
-                    type="text"
-                    required
-                    value={newMatch.team_b}
-                    onChange={(e) => setNewMatch(prev => ({ ...prev, team_b: e.target.value }))}
-                    className="w-full bg-[#070b13] border border-brand-border rounded-xl py-2 px-3 text-xs md:text-sm text-slate-200"
-                  />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs text-slate-400 font-bold">رابط شعار الفريق أ (اختياري)</label>
+                  <label className="text-xs text-slate-400 font-bold">تعديل رابط شعار الفريق أ (اختياري)</label>
                   <input
                     type="url"
+                    placeholder="https://example.com/logo-a.png"
                     value={newMatch.team_a_logo}
                     onChange={(e) => setNewMatch(prev => ({ ...prev, team_a_logo: e.target.value }))}
-                    className="w-full bg-[#070b13] border border-brand-border rounded-xl py-2 px-3 text-xs md:text-sm text-slate-200"
+                    className="w-full bg-[#070b13] border border-brand-border rounded-xl py-2.5 px-3 text-xs md:text-sm text-slate-200 text-left font-mono"
+                    dir="ltr"
                   />
                 </div>
+
                 <div className="flex flex-col gap-1">
-                  <label className="text-xs text-slate-400 font-bold">رابط شعار الفريق ب (اختياري)</label>
+                  <label className="text-xs text-slate-400 font-bold">تعديل رابط شعار الفريق ب (اختياري)</label>
                   <input
                     type="url"
+                    placeholder="https://example.com/logo-b.png"
                     value={newMatch.team_b_logo}
                     onChange={(e) => setNewMatch(prev => ({ ...prev, team_b_logo: e.target.value }))}
-                    className="w-full bg-[#070b13] border border-brand-border rounded-xl py-2 px-3 text-xs md:text-sm text-slate-200"
+                    className="w-full bg-[#070b13] border border-brand-border rounded-xl py-2.5 px-3 text-xs md:text-sm text-slate-200 text-left font-mono"
+                    dir="ltr"
                   />
                 </div>
+
                 <div className="flex flex-col gap-1">
                   <label className="text-xs text-slate-400 font-bold">توقيت الانطلاق (بالتوقيت المحلي/GMT)</label>
                   <input
@@ -635,16 +690,17 @@ export default function AdminDashboardPage() {
                     required
                     value={newMatch.start_time}
                     onChange={(e) => setNewMatch(prev => ({ ...prev, start_time: e.target.value }))}
-                    className="w-full bg-[#070b13] border border-brand-border rounded-xl py-2 px-3 text-xs md:text-sm text-slate-200"
+                    className="w-full bg-[#070b13] border border-brand-border rounded-xl py-2.5 px-3 text-xs md:text-sm text-slate-200"
                   />
                 </div>
+
                 <div className="flex flex-col gap-1">
                   <label className="text-xs text-slate-400 font-bold">البطولة / الدوري</label>
                   <input
                     type="text"
                     value={newMatch.league}
                     onChange={(e) => setNewMatch(prev => ({ ...prev, league: e.target.value }))}
-                    className="w-full bg-[#070b13] border border-brand-border rounded-xl py-2 px-3 text-xs md:text-sm text-slate-200"
+                    className="w-full bg-[#070b13] border border-brand-border rounded-xl py-2.5 px-3 text-xs md:text-sm text-slate-200"
                   />
                 </div>
               </div>
@@ -653,13 +709,13 @@ export default function AdminDashboardPage() {
                 <button
                   type="button"
                   onClick={() => setShowAddMatch(false)}
-                  className="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-xs md:text-sm font-bold"
+                  className="bg-slate-800 hover:bg-slate-700 text-slate-300 px-5 py-2 rounded-xl text-xs md:text-sm font-bold transition-all"
                 >
                   إلغاء
                 </button>
                 <button
                   type="submit"
-                  className="bg-brand-primary hover:bg-rose-700 text-white px-6 py-2 rounded-xl text-xs md:text-sm font-bold"
+                  className="bg-brand-primary hover:bg-rose-700 text-white px-6 py-2 rounded-xl text-xs md:text-sm font-bold transition-all"
                 >
                   حفظ المباراة
                 </button>
@@ -667,123 +723,236 @@ export default function AdminDashboardPage() {
             </form>
           )}
 
+          {/* Quick-filter Buttons */}
+          <div className="flex gap-2 bg-[#0c1220]/50 border border-brand-border/40 p-1.5 rounded-2xl self-start">
+            <button
+              onClick={() => setMatchFilter('all')}
+              className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                matchFilter === 'all'
+                  ? 'bg-brand-primary text-white'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              الكل ({matches.length})
+            </button>
+            <button
+              onClick={() => setMatchFilter('live')}
+              className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 ${
+                matchFilter === 'live'
+                  ? 'bg-emerald-500 text-slate-950'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              مباشر ({matches.filter(m => m.status === 'LIVE').length})
+            </button>
+            <button
+              onClick={() => setMatchFilter('ns')}
+              className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                matchFilter === 'ns'
+                  ? 'bg-amber-500 text-slate-950'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              لم تبدأ ({matches.filter(m => m.status === 'NS').length})
+            </button>
+            <button
+              onClick={() => setMatchFilter('ft')}
+              className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                matchFilter === 'ft'
+                  ? 'bg-slate-700 text-slate-200'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              انتهت ({matches.filter(m => m.status === 'FT').length})
+            </button>
+          </div>
+
           {/* List of Matches Grid (Bento Boxes) */}
           <div className="flex flex-col gap-6">
-            {matches.map((match) => (
-              <div key={match.id} className="glass-card rounded-2xl p-5 border border-brand-border flex flex-col gap-4">
-                
-                {/* Header (Teams summary) */}
-                <div className="flex flex-wrap justify-between items-center border-b border-brand-border pb-3 gap-2">
-                  <div className="flex items-center gap-2 font-extrabold text-white text-sm md:text-base">
-                    <span>{match.team_a}</span>
-                    <span className="text-slate-500 text-xs">ضد</span>
-                    <span>{match.team_b}</span>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    {/* Manual Override switch */}
-                    <button
-                      onClick={() => handleUpdateMatchField(match.id, 'is_manual', !match.is_manual)}
-                      className="flex items-center gap-1.5 text-xs font-bold text-slate-400 hover:text-white"
-                    >
-                      {match.is_manual ? (
-                        <>
-                          <ToggleRight className="w-6 h-6 text-brand-primary" />
-                          <span className="text-brand-primary">تحكم يدوي مفعل</span>
-                        </>
-                      ) : (
-                        <>
-                          <ToggleLeft className="w-6 h-6 text-slate-600" />
-                          <span>تحديث تلقائي (API)</span>
-                        </>
-                      )}
-                    </button>
+            {matches
+              .filter((match) => {
+                if (matchFilter === 'live') return match.status === 'LIVE'
+                if (matchFilter === 'ns') return match.status === 'NS'
+                if (matchFilter === 'ft') return match.status === 'FT'
+                return true
+              })
+              .map((match) => {
+                const defaultFlag = 'https://flagcdn.com/w160/un.png'
+                return (
+                  <div key={match.id} className="glass-card rounded-2xl p-5 border border-brand-border flex flex-col gap-4 bg-gradient-to-br from-slate-900/10 via-[#070b13]/40 to-slate-900/15">
                     
-                    <button
-                      onClick={() => handleDeleteMatch(match.id)}
-                      className="p-1.5 text-slate-500 hover:text-red-500 rounded-lg hover:bg-red-950/20 transition-all"
-                      title="حذف"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Inline score and status controls */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 items-center">
-                  <div className="flex flex-col gap-1">
-                    <label className="text-[10px] text-slate-500 font-bold">أهداف {match.team_a}</label>
-                    <input
-                      type="number"
-                      value={match.score_a}
-                      onChange={(e) => handleUpdateMatchField(match.id, 'score_a', e.target.value)}
-                      className="w-full bg-[#070b13] border border-brand-border rounded-xl py-2 px-3 text-xs md:text-sm text-slate-200"
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-1">
-                    <label className="text-[10px] text-slate-500 font-bold">أهداف {match.team_b}</label>
-                    <input
-                      type="number"
-                      value={match.score_b}
-                      onChange={(e) => handleUpdateMatchField(match.id, 'score_b', e.target.value)}
-                      className="w-full bg-[#070b13] border border-brand-border rounded-xl py-2 px-3 text-xs md:text-sm text-slate-200"
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-1">
-                    <label className="text-[10px] text-slate-500 font-bold">حالة المباراة</label>
-                    <select
-                      value={match.status}
-                      onChange={(e) => handleUpdateMatchField(match.id, 'status', e.target.value)}
-                      className="w-full bg-[#070b13] border border-brand-border rounded-xl py-2 px-3 text-xs md:text-sm text-slate-200 focus:outline-none"
-                    >
-                      <option value="NS">لم تبدأ (NS)</option>
-                      <option value="LIVE">مباشر (LIVE)</option>
-                      <option value="FT">انتهت (FT)</option>
-                    </select>
-                  </div>
-
-                  <div className="flex flex-col gap-1">
-                    <label className="text-[10px] text-slate-500 font-bold">القناة الناقلة</label>
-                    <input
-                      type="text"
-                      value={match.channel || ''}
-                      onChange={(e) => handleUpdateMatchField(match.id, 'channel', e.target.value)}
-                      className="w-full bg-[#070b13] border border-brand-border rounded-xl py-2 px-3 text-xs md:text-sm text-slate-200"
-                    />
-                  </div>
-                </div>
-
-                {/* Server URLs Configuration */}
-                <div className="flex flex-col gap-3 border-t border-brand-border/40 pt-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs text-slate-400 font-bold">خوادم البث المباشر (سيرفرات)</span>
-                    <button
-                      type="button"
-                      onClick={() => handleAddServerField(match.id)}
-                      className="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1.5 rounded-lg font-bold transition-all"
-                    >
-                      إضافة سيرفر
-                    </button>
-                  </div>
-
-                  <div className="flex flex-col gap-2.5">
-                    {match.servers?.map((server, sidx) => (
-                      <div key={sidx} className="flex gap-2 items-center">
-                        <input
-                          type="text"
-                          value={server.name}
-                          placeholder="اسم السيرفر (مثلاً سيرفر 1 HD)"
-                          onChange={(e) => handleUpdateMatchServer(match.id, sidx, 'name', e.target.value)}
-                          className="w-1/4 bg-[#070b13] border border-brand-border rounded-xl py-1.5 px-3 text-xs text-slate-200"
+                    {/* Header (Teams summary) */}
+                    <div className="flex flex-wrap justify-between items-center border-b border-brand-border pb-3 gap-4">
+                      <div className="flex items-center gap-3 font-extrabold text-white text-sm md:text-base">
+                        <img 
+                          src={match.team_a_logo || defaultFlag} 
+                          className="w-6 h-6 object-contain rounded-md bg-slate-900 border border-slate-700/30" 
+                          alt={match.team_a}
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = defaultFlag
+                          }}
                         />
+                        <span className="hover:text-brand-primary transition-colors">{match.team_a}</span>
+                        <span className="text-slate-500 text-xs font-black px-1.5 py-0.5 bg-slate-800/40 rounded-md">ضد</span>
+                        <span className="hover:text-brand-primary transition-colors">{match.team_b}</span>
+                        <img 
+                          src={match.team_b_logo || defaultFlag} 
+                          className="w-6 h-6 object-contain rounded-md bg-slate-900 border border-slate-700/30" 
+                          alt={match.team_b}
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = defaultFlag
+                          }}
+                        />
+                        {match.league && (
+                          <span className="text-[10px] text-brand-accent bg-brand-accent/10 border border-brand-accent/20 px-2 py-0.5 rounded-full font-black mr-2">
+                            {match.league}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        {/* Status Badge with colored indicators */}
+                        <span className={`text-[10px] font-black px-2 py-0.5 rounded-md flex items-center gap-1.5 ${
+                          match.status === 'LIVE' 
+                            ? 'bg-emerald-950 text-emerald-450 border border-emerald-800/40' 
+                            : match.status === 'NS' 
+                            ? 'bg-amber-950 text-amber-450 border border-amber-800/40' 
+                            : 'bg-slate-900 text-slate-400 border border-slate-800/60'
+                        }`}>
+                          {match.status === 'LIVE' && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />}
+                          {match.status === 'LIVE' ? 'مباشر' : match.status === 'NS' ? 'لم تبدأ' : 'انتهت'}
+                        </span>
+
+                        {/* Manual Override switch */}
+                        <button
+                          onClick={() => handleUpdateMatchField(match.id, 'is_manual', !match.is_manual)}
+                          className="flex items-center gap-1.5 text-xs font-bold text-slate-400 hover:text-white"
+                        >
+                          {match.is_manual ? (
+                            <>
+                              <ToggleRight className="w-6 h-6 text-brand-primary" />
+                              <span className="text-brand-primary text-[11px]">تحكم يدوي</span>
+                            </>
+                          ) : (
+                            <>
+                              <ToggleLeft className="w-6 h-6 text-slate-600" />
+                              <span className="text-[11px]">تحديث تلقائي</span>
+                            </>
+                          )}
+                        </button>
+                        
+                        <button
+                          onClick={() => handleDeleteMatch(match.id)}
+                          className="p-1.5 text-slate-500 hover:text-red-500 rounded-lg hover:bg-red-950/20 transition-all"
+                          title="حذف"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Inline score and status controls */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 items-center">
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[10px] text-slate-500 font-bold">أهداف {match.team_a}</label>
+                        <input
+                          type="number"
+                          value={match.score_a}
+                          onChange={(e) => handleUpdateMatchField(match.id, 'score_a', e.target.value)}
+                          className="w-full bg-[#070b13] border border-brand-border rounded-xl py-2 px-3 text-xs md:text-sm text-slate-200"
+                        />
+                      </div>
+
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[10px] text-slate-500 font-bold">أهداف {match.team_b}</label>
+                        <input
+                          type="number"
+                          value={match.score_b}
+                          onChange={(e) => handleUpdateMatchField(match.id, 'score_b', e.target.value)}
+                          className="w-full bg-[#070b13] border border-brand-border rounded-xl py-2 px-3 text-xs md:text-sm text-slate-200"
+                        />
+                      </div>
+
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[10px] text-slate-500 font-bold">حالة المباراة</label>
+                        <select
+                          value={match.status}
+                          onChange={(e) => handleUpdateMatchField(match.id, 'status', e.target.value)}
+                          className="w-full bg-[#070b13] border border-brand-border rounded-xl py-2 px-3 text-xs md:text-sm text-slate-200 focus:outline-none"
+                        >
+                          <option value="NS">لم تبدأ (NS)</option>
+                          <option value="LIVE">مباشر (LIVE)</option>
+                          <option value="FT">انتهت (FT)</option>
+                        </select>
+                      </div>
+
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[10px] text-slate-500 font-bold">القناة الناقلة</label>
                         <input
                           type="text"
-                          value={server.url}
-                          placeholder="الرابط المشفر Base64 أو المباشر"
-                          onChange={(e) => handleUpdateMatchServer(match.id, sidx, 'url', e.target.value)}
-                          className="flex-1 bg-[#070b13] border border-brand-border rounded-xl py-1.5 px-3 text-xs text-slate-200 text-left"
+                          value={match.channel || ''}
+                          onChange={(e) => handleUpdateMatchField(match.id, 'channel', e.target.value)}
+                          className="w-full bg-[#070b13] border border-brand-border rounded-xl py-2 px-3 text-xs md:text-sm text-slate-200"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Server URLs Configuration */}
+                    <div className="flex flex-col gap-3 border-t border-brand-border/40 pt-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs text-slate-400 font-bold">خوادم البث المباشر (سيرفرات)</span>
+                        <button
+                          type="button"
+                          onClick={() => handleAddServerField(match.id)}
+                          className="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1.5 rounded-lg font-bold transition-all"
+                        >
+                          إضافة سيرفر
+                        </button>
+                      </div>
+
+                      <div className="flex flex-col gap-2.5">
+                        {match.servers?.map((server, sidx) => (
+                          <div key={sidx} className="flex gap-2 items-center">
+                            <input
+                              type="text"
+                              value={server.name}
+                              placeholder="اسم السيرفر (مثلاً سيرفر 1 HD)"
+                              onChange={(e) => handleUpdateMatchServer(match.id, sidx, 'name', e.target.value)}
+                              className="w-1/4 bg-[#070b13] border border-brand-border rounded-xl py-1.5 px-3 text-xs text-slate-200 font-semibold"
+                            />
+                            <input
+                              type="text"
+                              value={server.url}
+                              placeholder="الرابط المشفر Base64 أو المباشر"
+                              onChange={(e) => handleUpdateMatchServer(match.id, sidx, 'url', e.target.value)}
+                              className="flex-1 bg-[#070b13] border border-brand-border rounded-xl py-1.5 px-3 text-xs text-slate-200 text-left font-mono"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveServerField(match.id, sidx)}
+                              className="text-red-500 hover:bg-red-950/20 p-1.5 rounded-lg transition-colors"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end pt-1">
+                      <button
+                        onClick={() => saveMatchUpdate(match)}
+                        className="bg-brand-primary hover:bg-rose-700 text-white px-5 py-2 rounded-xl text-xs md:text-sm font-bold flex items-center gap-1.5 transition-all shadow-md shadow-brand-primary/10"
+                      >
+                        <Save className="w-4 h-4" />
+                        حفظ التعديلات
+                      </button>
+                    </div>
+
+                  </div>
+                )
+              })}
+          </div>nd-border rounded-xl py-1.5 px-3 text-xs text-slate-200 text-left"
                         />
                         <button
                           type="button"
@@ -816,7 +985,7 @@ export default function AdminDashboardPage() {
 
       {/* --- TAB CONTENT: BLOGS --- */}
       {activeTab === 'blogs' && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-fade-in">
           
           {/* Blog Editor (Left Columns) */}
           <div className="lg:col-span-2 flex flex-col gap-6">
@@ -843,6 +1012,30 @@ export default function AdminDashboardPage() {
                   onChange={(e) => setNewBlog(prev => ({ ...prev, meta_description: e.target.value }))}
                   className="w-full bg-[#070b13] border border-brand-border rounded-xl py-2 px-3 text-xs md:text-sm text-slate-200 text-right leading-relaxed"
                 />
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs text-slate-400 font-bold">رابط صورة المقال (اختياري / URL)</label>
+                <input
+                  type="url"
+                  value={newBlog.image_url}
+                  onChange={(e) => setNewBlog(prev => ({ ...prev, image_url: e.target.value }))}
+                  placeholder="https://example.com/image.jpg"
+                  className="w-full bg-[#070b13] border border-brand-border rounded-xl py-2.5 px-3 text-xs md:text-sm text-slate-200 text-left font-mono"
+                  dir="ltr"
+                />
+                {newBlog.image_url && (
+                  <div className="mt-2 rounded-xl overflow-hidden border border-brand-border max-h-48 relative group bg-slate-950/40">
+                    <img
+                      src={newBlog.image_url}
+                      alt="معاينة الصورة"
+                      className="w-full h-48 object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = 'none'
+                      }}
+                    />
+                  </div>
+                )}
               </div>
 
               <div className="flex flex-col gap-1.5">
@@ -876,19 +1069,31 @@ export default function AdminDashboardPage() {
 
             <div className="flex flex-col gap-4">
               {blogs.map((blog) => (
-                <div key={blog.id} className="glass-card rounded-2xl p-4 border border-brand-border flex justify-between items-start gap-3">
-                  <div className="flex flex-col gap-1 max-w-[80%]">
-                    <span className="text-[9px] text-slate-500 font-bold">
-                      {new Date(blog.created_at).toLocaleDateString('ar-EG')}
-                    </span>
-                    <h4 className="text-xs md:text-sm font-bold text-slate-250 line-clamp-2">
-                      {blog.title}
-                    </h4>
+                <div key={blog.id} className="glass-card rounded-2xl p-4 border border-brand-border flex justify-between items-center gap-3 bg-gradient-to-br from-slate-900/10 to-[#070b13]/30">
+                  <div className="flex items-center gap-3 max-w-[80%]">
+                    {blog.image_url && (
+                      <img
+                        src={blog.image_url}
+                        alt=""
+                        className="w-12 h-12 rounded-xl object-cover border border-slate-700/50 bg-slate-900 shrink-0"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = 'none'
+                        }}
+                      />
+                    )}
+                    <div className="flex flex-col gap-1">
+                      <span className="text-[9px] text-slate-500 font-bold">
+                        {new Date(blog.created_at).toLocaleDateString('ar-EG')}
+                      </span>
+                      <h4 className="text-xs md:text-sm font-bold text-slate-250 line-clamp-2 leading-snug">
+                        {blog.title}
+                      </h4>
+                    </div>
                   </div>
 
                   <button
                     onClick={() => handleDeleteBlog(blog.id)}
-                    className="p-1.5 text-slate-500 hover:text-red-500 rounded-lg hover:bg-red-950/20 transition-colors"
+                    className="p-2 text-slate-500 hover:text-red-500 rounded-lg hover:bg-red-950/20 transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>

@@ -41,6 +41,7 @@ create table if not exists public.blogs (
   slug text not null unique,
   content text not null, -- HTML or Markdown content
   meta_description text,
+  image_url text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );

@@ -39,8 +39,19 @@ export default async function BlogIndexPage() {
               href={`/blog/${blog.slug}`}
               className="group"
             >
-              <div className="glass-card rounded-2xl p-6 border border-brand-border h-full flex flex-col justify-between gap-4">
+              <div className="glass-card rounded-2xl p-6 border border-brand-border h-full flex flex-col justify-between gap-4 transition-all duration-300 hover:border-brand-border/80">
                 <div className="flex flex-col gap-3">
+                  {blog.image_url && (
+                    <div className="rounded-xl overflow-hidden border border-brand-border/40 aspect-video w-full bg-slate-950/40 relative">
+                      <img
+                        src={blog.image_url}
+                        alt={blog.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
+                      />
+                    </div>
+                  )}
+
                   <span className="text-[10px] font-bold text-brand-primary flex items-center gap-1">
                     <Calendar className="w-3.5 h-3.5" />
                     {new Date(blog.created_at).toLocaleDateString('ar-EG', {
