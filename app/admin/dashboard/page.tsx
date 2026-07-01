@@ -952,32 +952,6 @@ export default function AdminDashboardPage() {
                   </div>
                 )
               })}
-          </div>nd-border rounded-xl py-1.5 px-3 text-xs text-slate-200 text-left"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveServerField(match.id, sidx)}
-                          className="text-red-500 hover:bg-red-950/20 p-1.5 rounded-lg"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex justify-end pt-1">
-                  <button
-                    onClick={() => saveMatchUpdate(match)}
-                    className="bg-brand-primary hover:bg-rose-700 text-white px-5 py-2 rounded-xl text-xs md:text-sm font-bold flex items-center gap-1.5 transition-all shadow-md shadow-brand-primary/10"
-                  >
-                    <Save className="w-4 h-4" />
-                    حفظ التعديلات
-                  </button>
-                </div>
-
-              </div>
-            ))}
           </div>
 
         </div>
