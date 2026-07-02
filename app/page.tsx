@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import FixtureDashboard from '@/components/FixtureDashboard'
 import Link from 'next/link'
 import { Newspaper, ChevronLeft, CalendarDays, Zap, Flame } from 'lucide-react'
+import { getEffectiveStatus } from '@/lib/utils'
 
 // Home page will revalidate every 30 seconds to capture live score updates
 export const revalidate = 30
@@ -24,7 +25,7 @@ export default async function Home() {
 
   const activeMatchesList = matches || []
   const activeBlogsList = blogs || []
-  const liveCount = activeMatchesList.filter(m => m.status === 'LIVE').length
+  const liveCount = activeMatchesList.filter(m => getEffectiveStatus(m.status, m.start_time) === 'LIVE').length
 
   // JSON-LD: WebSite schema with SearchAction for Google Sitelinks
   const websiteJsonLd = {

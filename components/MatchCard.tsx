@@ -2,7 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { formatLocalTime } from '@/lib/utils'
+import { formatLocalTime, getEffectiveStatus } from '@/lib/utils'
 
 interface MatchCardProps {
   match: {
@@ -22,8 +22,9 @@ interface MatchCardProps {
 }
 
 export default function MatchCard({ match }: MatchCardProps) {
-  const isLive = match.status === 'LIVE'
-  const isFinished = match.status === 'FT'
+  const effectiveStatus = getEffectiveStatus(match.status, match.start_time)
+  const isLive = effectiveStatus === 'LIVE'
+  const isFinished = effectiveStatus === 'FT'
 
   return (
     <Link href={`/match/${match.slug}`} className="block">

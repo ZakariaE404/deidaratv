@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import MatchCard from '@/components/MatchCard'
 import { Search, Flame, Calendar, CheckCircle, Trophy } from 'lucide-react'
+import { getEffectiveStatus } from '@/lib/utils'
 
 interface Match {
   id: string
@@ -29,8 +30,14 @@ export default function FixtureDashboard({ initialMatches }: FixtureDashboardPro
   const [filter, setFilter] = useState<FilterType>('all')
   const [searchQuery, setSearchQuery] = useState('')
 
+  // Dynamically calculate effective status for all matches based on start time
+  const matches = initialMatches.map((m) => ({
+    ...m,
+    status: getEffectiveStatus(m.status, m.start_time),
+  }))
+
   // Filter matches based on search query and status tabs
-  const filteredMatches = initialMatches.filter((match) => {
+  const filteredMatches = matches.filter((match) => {
     const matchesSearch =
       match.team_a.toLowerCase().includes(searchQuery.toLowerCase()) ||
       match.team_b.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -46,7 +53,7 @@ export default function FixtureDashboard({ initialMatches }: FixtureDashboardPro
   })
 
   // Live match carousel count
-  const liveMatches = initialMatches.filter((m) => m.status === 'LIVE')
+  const liveMatches = matches.filter((m) => m.status === 'LIVE')
 
   return (
     <div className="flex flex-col gap-8">
@@ -85,7 +92,7 @@ export default function FixtureDashboard({ initialMatches }: FixtureDashboardPro
               }`}
             >
               <Trophy className="w-4 h-4" />
-              الكل ({initialMatches.length})
+              الكل ({matches.length})
             </button>
             <button
               onClick={() => setFilter('live')}
@@ -107,7 +114,7 @@ export default function FixtureDashboard({ initialMatches }: FixtureDashboardPro
               }`}
             >
               <Calendar className="w-4 h-4" />
-              القادمة ({initialMatches.filter((m) => m.status === 'NS').length})
+              القادمة ({matches.filter((m) => m.status === 'NS').length})
             </button>
             <button
               onClick={() => setFilter('finished')}
@@ -118,7 +125,7 @@ export default function FixtureDashboard({ initialMatches }: FixtureDashboardPro
               }`}
             >
               <CheckCircle className="w-4 h-4" />
-              المنتهية ({initialMatches.filter((m) => m.status === 'FT').length})
+              المنتهية ({matches.filter((m) => m.status === 'FT').length})
             </button>
           </div>
 

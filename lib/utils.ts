@@ -70,3 +70,26 @@ export function slugify(text: string): string {
     .replace(/^-+/, '')
     .replace(/-+$/, '')
 }
+
+export function getEffectiveStatus(status: string, startTimeString: string): string {
+  if (!startTimeString) return status;
+  if (status === 'FT') return 'FT'; // If explicitly marked finished, keep finished
+
+  const startTime = new Date(startTimeString);
+  const now = new Date();
+  const diffMs = now.getTime() - startTime.getTime();
+  const diffHours = diffMs / (1000 * 60 * 60);
+
+  // LIVE: from 1 hour before start_time to 3 hours after start_time (total 4 hours)
+  if (diffHours >= -1 && diffHours < 3) {
+    return 'LIVE';
+  }
+
+  // FT: after 3 hours from start_time
+  if (diffHours >= 3) {
+    return 'FT';
+  }
+
+  // NS: before 1 hour from start_time
+  return 'NS';
+}

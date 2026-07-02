@@ -15,10 +15,11 @@ interface BlogPageProps {
 async function getBlog(slug: string) {
   try {
     const supabase = createClient()
+    const decodedSlug = decodeURIComponent(slug)
     const { data: blog, error } = await supabase
       .from('blogs')
       .select('*')
-      .eq('slug', slug)
+      .eq('slug', decodedSlug)
       .single()
     
     if (error) {

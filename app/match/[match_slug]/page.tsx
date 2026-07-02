@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import StreamPlayer from '@/components/StreamPlayer'
-import { formatLocalTime, formatLocalDate } from '@/lib/utils'
+import { formatLocalTime, formatLocalDate, getEffectiveStatus } from '@/lib/utils'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { Tv, Calendar, Info, Send, Trophy, ArrowRight } from 'lucide-react'
@@ -20,10 +20,11 @@ interface MatchPageProps {
 async function getMatch(slug: string) {
   try {
     const supabase = createClient()
+    const decodedSlug = decodeURIComponent(slug)
     const { data: match, error } = await supabase
       .from('matches')
       .select('*')
-      .eq('slug', slug)
+      .eq('slug', decodedSlug)
       .single()
     
     if (error) {
@@ -46,8 +47,9 @@ export async function generateMetadata({ params }: MatchPageProps): Promise<Meta
     }
   }
 
-  const isLive = match.status === 'LIVE'
-  const isFinished = match.status === 'FT'
+  const effectiveStatus = getEffectiveStatus(match.status, match.start_time)
+  const isLive = effectiveStatus === 'LIVE'
+  const isFinished = effectiveStatus === 'FT'
   const scoreA = match.score_a ?? 0
   const scoreB = match.score_b ?? 0
 
@@ -98,8 +100,9 @@ export default async function MatchPage({ params }: MatchPageProps) {
     notFound()
   }
 
-  const isLive = match.status === 'LIVE'
-  const isFinished = match.status === 'FT'
+  const effectiveStatus = getEffectiveStatus(match.status, match.start_time)
+  const isLive = effectiveStatus === 'LIVE'
+  const isFinished = effectiveStatus === 'FT'
   const scoreA = match.score_a ?? 0
   const scoreB = match.score_b ?? 0
   const servers = Array.isArray(match.servers) ? match.servers : []

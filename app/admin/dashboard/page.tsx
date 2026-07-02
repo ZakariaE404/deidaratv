@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { slugify, decodeBase64 } from '@/lib/utils'
+import { slugify, decodeBase64, getEffectiveStatus } from '@/lib/utils'
 import DOMPurify from 'dompurify'
 import { 
   Trophy, 
@@ -257,6 +257,12 @@ export default function AdminDashboardPage() {
       const { error } = await supabase
         .from('matches')
         .update({
+          team_a: match.team_a,
+          team_b: match.team_b,
+          team_a_logo: match.team_a_logo || null,
+          team_b_logo: match.team_b_logo || null,
+          start_time: match.start_time,
+          league: match.league,
           score_a: Number(match.score_a),
           score_b: Number(match.score_b),
           status: match.status,
@@ -745,7 +751,7 @@ export default function AdminDashboardPage() {
                   : 'text-slate-400 hover:text-white'
               }`}
             >
-              مباشر ({matches.filter(m => m.status === 'LIVE').length})
+              مباشر ({matches.filter(m => getEffectiveStatus(m.status, m.start_time) === 'LIVE').length})
             </button>
             <button
               onClick={() => setMatchFilter('ns')}
@@ -755,7 +761,7 @@ export default function AdminDashboardPage() {
                   : 'text-slate-400 hover:text-white'
               }`}
             >
-              لم تبدأ ({matches.filter(m => m.status === 'NS').length})
+              لم تبدأ ({matches.filter(m => getEffectiveStatus(m.status, m.start_time) === 'NS').length})
             </button>
             <button
               onClick={() => setMatchFilter('ft')}
@@ -765,7 +771,7 @@ export default function AdminDashboardPage() {
                   : 'text-slate-400 hover:text-white'
               }`}
             >
-              انتهت ({matches.filter(m => m.status === 'FT').length})
+              انتهت ({matches.filter(m => getEffectiveStatus(m.status, m.start_time) === 'FT').length})
             </button>
           </div>
 
@@ -773,9 +779,10 @@ export default function AdminDashboardPage() {
           <div className="flex flex-col gap-6">
             {matches
               .filter((match) => {
-                if (matchFilter === 'live') return match.status === 'LIVE'
-                if (matchFilter === 'ns') return match.status === 'NS'
-                if (matchFilter === 'ft') return match.status === 'FT'
+                const effStatus = getEffectiveStatus(match.status, match.start_time)
+                if (matchFilter === 'live') return effStatus === 'LIVE'
+                if (matchFilter === 'ns') return effStatus === 'NS'
+                if (matchFilter === 'ft') return effStatus === 'FT'
                 return true
               })
               .map((match) => {
@@ -813,17 +820,22 @@ export default function AdminDashboardPage() {
                       </div>
 
                       <div className="flex items-center gap-3">
-                        {/* Status Badge with colored indicators */}
-                        <span className={`text-[10px] font-black px-2 py-0.5 rounded-md flex items-center gap-1.5 ${
-                          match.status === 'LIVE' 
-                            ? 'bg-emerald-950 text-emerald-450 border border-emerald-800/40' 
-                            : match.status === 'NS' 
-                            ? 'bg-amber-950 text-amber-450 border border-amber-800/40' 
-                            : 'bg-slate-900 text-slate-400 border border-slate-800/60'
-                        }`}>
-                          {match.status === 'LIVE' && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />}
-                          {match.status === 'LIVE' ? 'مباشر' : match.status === 'NS' ? 'لم تبدأ' : 'انتهت'}
-                        </span>
+                        {/* Status Badge with colored indicators based on dynamic effective status */}
+                        {(() => {
+                          const effStatus = getEffectiveStatus(match.status, match.start_time)
+                          return (
+                            <span className={`text-[10px] font-black px-2 py-0.5 rounded-md flex items-center gap-1.5 ${
+                              effStatus === 'LIVE' 
+                                ? 'bg-emerald-950 text-emerald-450 border border-emerald-800/40' 
+                                : effStatus === 'NS' 
+                                ? 'bg-amber-950 text-amber-450 border border-amber-800/40' 
+                                : 'bg-slate-900 text-slate-400 border border-slate-800/60'
+                            }`}>
+                              {effStatus === 'LIVE' && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />}
+                              {effStatus === 'LIVE' ? 'مباشر' : effStatus === 'NS' ? 'لم تبدأ' : 'انتهت'}
+                            </span>
+                          )
+                        })()}
 
                         {/* Manual Override switch */}
                         <button
@@ -895,6 +907,66 @@ export default function AdminDashboardPage() {
                           value={match.channel || ''}
                           onChange={(e) => handleUpdateMatchField(match.id, 'channel', e.target.value)}
                           className="w-full bg-[#070b13] border border-brand-border rounded-xl py-2 px-3 text-xs md:text-sm text-slate-200"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Advanced match details editing */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 border-t border-brand-border/40 pt-3">
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[10px] text-slate-500 font-bold">اسم الفريق أ</label>
+                        <input
+                          type="text"
+                          value={match.team_a}
+                          onChange={(e) => handleUpdateMatchField(match.id, 'team_a', e.target.value)}
+                          className="w-full bg-[#070b13] border border-brand-border rounded-xl py-1.5 px-3 text-xs text-slate-200"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[10px] text-slate-500 font-bold">اسم الفريق ب</label>
+                        <input
+                          type="text"
+                          value={match.team_b}
+                          onChange={(e) => handleUpdateMatchField(match.id, 'team_b', e.target.value)}
+                          className="w-full bg-[#070b13] border border-brand-border rounded-xl py-1.5 px-3 text-xs text-slate-200"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[10px] text-slate-500 font-bold">البطولة / الدوري</label>
+                        <input
+                          type="text"
+                          value={match.league || ''}
+                          onChange={(e) => handleUpdateMatchField(match.id, 'league', e.target.value)}
+                          className="w-full bg-[#070b13] border border-brand-border rounded-xl py-1.5 px-3 text-xs text-slate-200"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[10px] text-slate-500 font-bold">شعار الفريق أ (رابط URL)</label>
+                        <input
+                          type="text"
+                          value={match.team_a_logo || ''}
+                          onChange={(e) => handleUpdateMatchField(match.id, 'team_a_logo', e.target.value)}
+                          className="w-full bg-[#070b13] border border-brand-border rounded-xl py-1.5 px-3 text-xs text-slate-200 text-left font-mono"
+                          dir="ltr"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[10px] text-slate-500 font-bold">شعار الفريق ب (رابط URL)</label>
+                        <input
+                          type="text"
+                          value={match.team_b_logo || ''}
+                          onChange={(e) => handleUpdateMatchField(match.id, 'team_b_logo', e.target.value)}
+                          className="w-full bg-[#070b13] border border-brand-border rounded-xl py-1.5 px-3 text-xs text-slate-200 text-left font-mono"
+                          dir="ltr"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[10px] text-slate-500 font-bold">وقت الانطلاق</label>
+                        <input
+                          type="datetime-local"
+                          value={match.start_time ? match.start_time.slice(0, 16) : ''}
+                          onChange={(e) => handleUpdateMatchField(match.id, 'start_time', e.target.value)}
+                          className="w-full bg-[#070b13] border border-brand-border rounded-xl py-1.5 px-3 text-xs text-slate-200"
                         />
                       </div>
                     </div>
