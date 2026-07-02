@@ -19,7 +19,12 @@ export default function Header() {
           
           {/* Logo & Desktop Nav */}
           <div className="flex items-center gap-8 lg:gap-12">
-            <Link href="/" className="flex items-center gap-3 active:scale-95 transition-all select-none">
+            <Link href="/" className="flex items-center gap-3 active:scale-95 transition-all select-none group">
+              <img 
+                src="/imgs/icon.png" 
+                alt="DeidaraTV Logo" 
+                className="h-10 md:h-12 w-auto object-contain transition-opacity group-hover:opacity-95" 
+              />
               <div className="relative flex flex-col">
                 <span className="text-xl md:text-2xl font-black italic tracking-tighter uppercase leading-none text-white">
                   Deidara<span className="text-brand-primary">TV</span>

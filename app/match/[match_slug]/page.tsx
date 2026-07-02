@@ -299,14 +299,16 @@ export default async function MatchPage({ params }: MatchPageProps) {
         </section>
 
         {/* Dynamic Stream Player Section */}
-        <section className="flex flex-col gap-4">
-          <div className="flex items-center gap-2 px-1">
-            <Tv className="w-5 h-5 text-brand-primary" />
-            <h2 className="text-lg md:text-xl font-extrabold text-white">شاشة البث المباشر</h2>
-          </div>
-          
-          <StreamPlayer servers={servers} />
-        </section>
+        {isLive && (
+          <section className="flex flex-col gap-4">
+            <div className="flex items-center gap-2 px-1">
+              <Tv className="w-5 h-5 text-brand-primary" />
+              <h2 className="text-lg md:text-xl font-extrabold text-white">شاشة البث المباشر</h2>
+            </div>
+            
+            <StreamPlayer servers={servers} />
+          </section>
+        )}
 
         {/* Details Grid (Bento Grid Style) */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
