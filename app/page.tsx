@@ -3,6 +3,8 @@ import FixtureDashboard from '@/components/FixtureDashboard'
 import Link from 'next/link'
 import { Newspaper, ChevronLeft, CalendarDays, Zap, Flame } from 'lucide-react'
 import { getEffectiveStatus } from '@/lib/utils'
+import ResponsiveAd from '@/components/ResponsiveAd'
+import AdBanner from '@/components/AdBanner'
 
 // Home page will revalidate every 30 seconds to capture live score updates
 export const revalidate = 30
@@ -142,10 +144,16 @@ export default async function Home() {
           </div>
         </section>
 
+        {/* Top Ad banner */}
+        <ResponsiveAd />
+
         {/* Main Fixtures Dashboard */}
         <section className="flex flex-col gap-4">
           <FixtureDashboard initialMatches={activeMatchesList} />
         </section>
+
+        {/* Middle Native Ad Banner */}
+        <AdBanner type="native" />
 
         {/* Latest News / Blogs Section with Cover Images */}
         <section className="flex flex-col gap-6">
@@ -228,6 +236,9 @@ export default async function Home() {
             </div>
           )}
         </section>
+
+        {/* Bottom Ad banner */}
+        <ResponsiveAd />
 
       </div>
     </>

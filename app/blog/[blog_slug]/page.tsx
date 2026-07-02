@@ -3,6 +3,8 @@ import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { Calendar, ArrowRight, Clock, BookOpen } from 'lucide-react'
+import ResponsiveAd from '@/components/ResponsiveAd'
+import AdBanner from '@/components/AdBanner'
 
 export const revalidate = 900 // 15 minutes static revalidation window
 
@@ -212,6 +214,9 @@ export default async function BlogPage({ params }: BlogPageProps) {
           </div>
         )}
 
+        {/* Top Ad banner */}
+        <ResponsiveAd />
+
         {/* Article Reader Content */}
         <article className="glass-card rounded-3xl p-6 md:p-12 border border-brand-border leading-[1.9] text-slate-200">
           {/* We format paragraphs nicely. If content contains HTML we render it directly. */}
@@ -220,6 +225,9 @@ export default async function BlogPage({ params }: BlogPageProps) {
             dangerouslySetInnerHTML={{ __html: blog.content }}
           />
         </article>
+
+        {/* Middle Native Ad Banner */}
+        <AdBanner type="native" />
 
         {/* SEO Rich Description */}
         <section className="glass-card rounded-2xl p-6 md:p-8 border border-brand-border">
@@ -296,6 +304,9 @@ export default async function BlogPage({ params }: BlogPageProps) {
             انضم لتليجرام
           </a>
         </section>
+
+        {/* Bottom Ad banner */}
+        <ResponsiveAd />
 
       </div>
     </>

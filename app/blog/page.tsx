@@ -2,6 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { BookOpen, Calendar, ChevronLeft, ArrowRight, Flame, Clock } from 'lucide-react'
 import { Metadata } from 'next'
+import ResponsiveAd from '@/components/ResponsiveAd'
+import AdBanner from '@/components/AdBanner'
 
 export const revalidate = 900 // 15 minutes static revalidation window
 
@@ -126,6 +128,9 @@ export default async function BlogIndexPage() {
           </div>
         </section>
 
+        {/* Top Ad banner */}
+        <ResponsiveAd />
+
         {blogList.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {blogList.map((blog) => {
@@ -205,6 +210,9 @@ export default async function BlogIndexPage() {
           </div>
         )}
 
+        {/* Middle Native Ad Banner */}
+        <AdBanner type="native" />
+
         {/* SEO Bottom Section */}
         <section className="glass-card rounded-2xl p-6 md:p-8 border border-brand-border">
           <h2 className="text-lg md:text-xl font-extrabold text-white mb-4">أخبار كورة لايف Koora Live — مباريات اليوم بث مباشر على Deidara TV</h2>
@@ -217,6 +225,9 @@ export default async function BlogIndexPage() {
             </p>
           </div>
         </section>
+
+        {/* Bottom Ad banner */}
+        <ResponsiveAd />
       </div>
     </>
   )

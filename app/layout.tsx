@@ -2,6 +2,7 @@ import './globals.css'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { Metadata, Viewport } from 'next'
+import Script from 'next/script'
 
 export const viewport: Viewport = {
   themeColor: '#0b0f19',
@@ -53,6 +54,20 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ar" dir="rtl" className="scroll-smooth">
+      <head>
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-BXPTL3P21R"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-BXPTL3P21R');
+          `}
+        </Script>
+      </head>
       <body className="flex flex-col min-h-screen bg-[#0b0f19] text-slate-100 antialiased font-cairo selection:bg-brand-primary selection:text-white">
         <Header />
         <main className="flex-grow">

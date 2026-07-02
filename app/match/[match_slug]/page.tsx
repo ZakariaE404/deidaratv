@@ -6,6 +6,8 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { Tv, Calendar, Info, Send, Trophy, ArrowRight, BookOpen } from 'lucide-react'
 import Image from 'next/image'
+import ResponsiveAd from '@/components/ResponsiveAd'
+import AdBanner from '@/components/AdBanner'
 
 // Force dynamic rendering for live match data freshness
 export const dynamic = 'force-dynamic'
@@ -227,6 +229,9 @@ export default async function MatchPage({ params }: MatchPageProps) {
           العودة للرئيسية
         </Link>
 
+        {/* Ad 1: Top Ad (Responsive) */}
+        <ResponsiveAd />
+
         {/* Head-to-Head Banner (Bento Style) */}
         <section className="glass-card rounded-3xl p-6 md:p-8 border border-brand-border flex flex-col md:flex-row items-center gap-6 justify-between relative overflow-hidden">
           <div className="absolute top-0 left-0 w-32 h-32 bg-brand-primary/5 rounded-full blur-3xl pointer-events-none"></div>
@@ -298,6 +303,9 @@ export default async function MatchPage({ params }: MatchPageProps) {
           </div>
         </section>
 
+        {/* Ad 2: Before Player (Responsive - Live Only) */}
+        {isLive && <ResponsiveAd />}
+
         {/* Dynamic Stream Player Section */}
         {isLive && (
           <section className="flex flex-col gap-4">
@@ -309,6 +317,9 @@ export default async function MatchPage({ params }: MatchPageProps) {
             <StreamPlayer servers={servers} />
           </section>
         )}
+
+        {/* Ad 3: After Player (Native - Live Only) */}
+        {isLive && <AdBanner type="native" />}
 
         {/* Details Grid (Bento Grid Style) */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -363,6 +374,12 @@ export default async function MatchPage({ params }: MatchPageProps) {
           </div>
 
         </section>
+
+        {/* Ad 4: Mid-page Native Banner (Non-Live Only) */}
+        {!isLive && <AdBanner type="native" />}
+
+        {/* Ad 5: Mid-page Responsive Banner (Live Only) */}
+        {isLive && <ResponsiveAd />}
 
         {/* Rich SEO Content Section */}
         <section className="glass-card rounded-2xl p-6 md:p-8 border border-brand-border flex flex-col gap-6">
@@ -440,6 +457,9 @@ export default async function MatchPage({ params }: MatchPageProps) {
           </div>
         </section>
 
+        {/* Ad 6: Lower-page Native Banner (Live Only) */}
+        {isLive && <AdBanner type="native" />}
+
         {/* Suggested Blog Articles */}
         {suggestedBlogs && suggestedBlogs.length > 0 && (
           <section className="flex flex-col gap-5">
@@ -482,6 +502,9 @@ export default async function MatchPage({ params }: MatchPageProps) {
             </div>
           </section>
         )}
+
+        {/* Ad 7: Bottom Ad (Responsive) */}
+        <ResponsiveAd />
 
       </div>
     </>
