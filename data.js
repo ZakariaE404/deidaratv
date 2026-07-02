@@ -756,6 +756,32 @@ const MATCHES_DATA = [
     dateTime: "2026-06-28T02:00:00Z",
     league: "كأس العالم 2026 - المجموعة J",
     channel: "beIN Sports HD 2",
-    servers: SHARED_SERVERS
+  }
+];
+
+const BLOGS_DATA = [
+  {
+    id: 1,
+    title: "موعد مباريات اليوم بث مباشر كأس العالم 2026 والقنوات الناقلة كورة لايف",
+    slug: "world-cup-2026-today-matches-schedule-koora-live",
+    meta_description: "تعرف على جدول مواعيد مباريات اليوم في بطولة كأس العالم 2026 والقنوات الناقلة لها. تابع التغطية الحية والبث المباشر بدون تقطيع على كورة لايف koora live وديدارا تي في.",
+    image_url: "https://deidaratv.live/imgs/cover.jpg",
+    created_at: "2026-07-02T08:00:00Z"
+  },
+  {
+    id: 2,
+    title: "كيفية مشاهدة البث المباشر لمباريات اليوم بدون تقطيع - دليل كورة لايف",
+    slug: "how-to-watch-live-matches-without-cutting-kora-live",
+    meta_description: "دليلك الشامل لتشغيل البث المباشر للمباريات بجودة عالية وبدون تقطيع. تعرف على كيفية اختيار السيرفرات السريعة ومتابعة كورة لايف koora live مجاناً.",
+    image_url: "https://deidaratv.live/imgs/cover.jpg",
+    created_at: "2026-07-01T15:30:00Z"
+  },
+  {
+    id: 3,
+    title: "أفضل مواقع بث مباشر للمباريات 2026: ديدارا تي في في الصدارة",
+    slug: "best-live-streaming-sites-2026-deidaratv",
+    meta_description: "مقارنة شاملة لأفضل مواقع البث المباشر للمباريات وكورة لايف. لماذا يعتبر موقع ديدارا تي في Deidara TV الخيار الأول لعشاق الرياضة العربية؟",
+    image_url: "https://deidaratv.live/imgs/cover.jpg",
+    created_at: "2026-06-30T12:00:00Z"
   }
 ];

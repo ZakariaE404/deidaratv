@@ -4,7 +4,8 @@ import StreamPlayer from '@/components/StreamPlayer'
 import { formatLocalTime, formatLocalDate, getEffectiveStatus } from '@/lib/utils'
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { Tv, Calendar, Info, Send, Trophy, ArrowRight } from 'lucide-react'
+import { Tv, Calendar, Info, Send, Trophy, ArrowRight, BookOpen } from 'lucide-react'
+import Image from 'next/image'
 
 // Force dynamic rendering for live match data freshness
 export const dynamic = 'force-dynamic'
@@ -99,6 +100,14 @@ export default async function MatchPage({ params }: MatchPageProps) {
   if (!match) {
     notFound()
   }
+
+  // Fetch suggested blog articles
+  const supabase = createClient()
+  const { data: suggestedBlogs } = await supabase
+    .from('blogs')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(3)
 
   const effectiveStatus = getEffectiveStatus(match.status, match.start_time)
   const isLive = effectiveStatus === 'LIVE'
@@ -352,6 +361,125 @@ export default async function MatchPage({ params }: MatchPageProps) {
           </div>
 
         </section>
+
+        {/* Rich SEO Content Section */}
+        <section className="glass-card rounded-2xl p-6 md:p-8 border border-brand-border flex flex-col gap-6">
+          <h2 className="text-xl md:text-2xl font-black text-white leading-relaxed">
+            مشاهدة مباراة {match.team_a} × {match.team_b} اليوم بث مباشر بصوت المعلق — Deidara TV
+          </h2>
+          <p className="text-sm md:text-base text-slate-300 leading-[1.9]">
+            مرحباً بك في <strong className="text-brand-primary">Deidara TV</strong> — وجهتك الأولى لمشاهدة مباراة{' '}
+            <strong className="text-white">{match.team_a} ضد {match.team_b}</strong> بث مباشر اليوم بجودة عالية HD وبدون أي تقطيع.
+            سواء كنت تبحث عن <strong>كورة لايف</strong> أو <strong>koora live</strong> أو <strong>kora live</strong>، فإن ديدارا تي في
+            يوفر لك تجربة بث مباشر سلسة ومجانية بالكامل لجميع مباريات اليوم. يمكنك متابعة المواجهة لحظة بلحظة مع
+            تحديثات فورية للنتائج والأهداف عبر خوادم البث المتعددة التي نوفرها لضمان تجربة مشاهدة بدون انقطاع.
+            نحن نقدم لك أفضل تجربة بث مباشر مباريات اليوم على الإنترنت مع تعليق عربي حصري.
+          </p>
+
+          <h3 className="text-lg md:text-xl font-extrabold text-brand-accent">
+            موعد مباراة {match.team_a} و {match.team_b} على Deidara TV — ديدارا تي في
+          </h3>
+          <p className="text-sm md:text-base text-slate-300 leading-[1.9]">
+            تُقام مباراة <strong className="text-white">{match.team_a} و {match.team_b}</strong> ضمن منافسات{' '}
+            <strong className="text-white">{match.league || 'كأس العالم 2026'}</strong>. يمكنك مشاهدة المباراة مباشرة على
+            موقع <strong className="text-brand-primary">Deidara TV</strong> (ديدارا تي في / سير تيفي) عبر خوادم بث متعددة
+            تضمن لك جودة فائقة بدون تقطيع. تابع <strong>مباريات اليوم بث مباشر</strong> بصوت المعلق واستمتع بتغطية شاملة
+            تشمل تشكيلة الفريقين وتحديثات الأهداف لحظة بلحظة. سواء كنت تستخدم الهاتف أو الكمبيوتر، البث متاح
+            على جميع الأجهزة بتقنية التكيف التلقائي مع سرعة الإنترنت.
+          </p>
+
+          <h3 className="text-lg md:text-xl font-extrabold text-brand-accent">
+            قنوات نقل {match.team_a} ضد {match.team_b} — البث الحي على ديدارا تي في
+          </h3>
+          <p className="text-sm md:text-base text-slate-300 leading-[1.9]">
+            يتم نقل مباراة {match.team_a} ضد {match.team_b} عبر عدة قنوات رياضية. وعلى موقع <strong className="text-brand-primary">Deidara TV</strong>{' '}
+            (كورة لايف / koora live / kora live) نوفر لك روابط بث مباشر مجانية من خوادم متعددة بجودات تتراوح بين
+            SD و HD و Full HD. كل ما عليك هو اختيار السيرفر المناسب والاستمتاع بمشاهدة المباراة كاملة. نحن نعمل
+            على تحديث روابط البث باستمرار لضمان عمل الخوادم طوال فترة المباراة، حتى تتمكن من متابعة كل لحظة
+            بدون أي مشاكل تقنية. تابعنا على تليجرام للحصول على روابط بث احتياطية فورية.
+          </p>
+
+          <h3 className="text-lg md:text-xl font-extrabold text-brand-accent">
+            بطاقة المباراة — {match.team_a} Vs {match.team_b}
+          </h3>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm md:text-base border border-brand-border rounded-xl overflow-hidden">
+              <tbody>
+                <tr className="border-b border-brand-border">
+                  <td className="px-4 py-3 font-bold text-slate-400 bg-slate-900/50 w-1/3">🏟️ البطولة</td>
+                  <td className="px-4 py-3 text-white font-extrabold">{match.league || 'كأس العالم 2026'}</td>
+                </tr>
+                <tr className="border-b border-brand-border">
+                  <td className="px-4 py-3 font-bold text-slate-400 bg-slate-900/50">📺 اسم القناة</td>
+                  <td className="px-4 py-3 text-white font-extrabold">{match.channel || 'beIN Sports HD'}</td>
+                </tr>
+                <tr className="border-b border-brand-border">
+                  <td className="px-4 py-3 font-bold text-slate-400 bg-slate-900/50">📅 تاريخ المباراة</td>
+                  <td className="px-4 py-3 text-white font-extrabold">{formattedDate}</td>
+                </tr>
+                <tr className="border-b border-brand-border">
+                  <td className="px-4 py-3 font-bold text-slate-400 bg-slate-900/50">⏰ توقيت المباراة</td>
+                  <td className="px-4 py-3 text-white font-extrabold">{formattedTime}</td>
+                </tr>
+                <tr className="border-b border-brand-border">
+                  <td className="px-4 py-3 font-bold text-slate-400 bg-slate-900/50">🎙️ المعلق</td>
+                  <td className="px-4 py-3 text-white font-extrabold">{match.commentator || 'غير محدد بعد'}</td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-3 font-bold text-slate-400 bg-slate-900/50">⚽ نتيجة المباراة</td>
+                  <td className="px-4 py-3 text-white font-extrabold">
+                    {isLive || isFinished
+                      ? `${match.team_a} ${scoreA} - ${scoreB} ${match.team_b}`
+                      : 'لم تبدأ بعد'}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        {/* Suggested Blog Articles */}
+        {suggestedBlogs && suggestedBlogs.length > 0 && (
+          <section className="flex flex-col gap-5">
+            <div className="flex items-center gap-2 px-1">
+              <BookOpen className="w-5 h-5 text-brand-primary" />
+              <h2 className="text-lg md:text-xl font-extrabold text-white">أخبار ومقالات ذات صلة</h2>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+              {suggestedBlogs.map((blog: any) => (
+                <Link
+                  key={blog.id}
+                  href={`/blog/${blog.slug}`}
+                  className="glass-card rounded-2xl border border-brand-border overflow-hidden group hover:border-brand-primary/40 transition-all duration-300"
+                >
+                  {blog.cover_image && (
+                    <div className="relative w-full h-40 overflow-hidden">
+                      <img
+                        src={blog.cover_image}
+                        alt={blog.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    </div>
+                  )}
+                  <div className="p-4 flex flex-col gap-2">
+                    <h3 className="text-sm md:text-base font-extrabold text-white line-clamp-2 group-hover:text-brand-primary transition-colors">
+                      {blog.title}
+                    </h3>
+                    <span className="text-xs text-slate-500 font-bold">
+                      {new Date(blog.created_at).toLocaleDateString('ar-EG', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })}
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
 
       </div>
     </>

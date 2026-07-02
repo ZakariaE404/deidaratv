@@ -3,9 +3,14 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { Menu, X, Send, Home, Calendar, BookOpen, Search } from 'lucide-react'
+import { usePathname } from 'next/navigation'
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false)
+  const pathname = usePathname()
+
+  const isHomeActive = pathname === '/'
+  const isBlogActive = pathname.startsWith('/blog')
 
   return (
     <header className="sticky top-0 z-[100] w-full glass-panel border-b border-brand-border">
@@ -28,23 +33,31 @@ export default function Header() {
             <nav className="hidden md:flex items-center gap-1">
               <Link 
                 href="/" 
-                className="flex items-center gap-2 px-4 py-2 text-white hover:bg-white/5 rounded-lg transition-all font-bold text-sm"
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all font-bold text-sm border ${
+                  isHomeActive && !isBlogActive
+                    ? 'text-white bg-white/5 border-brand-primary/20'
+                    : 'text-slate-400 hover:text-white hover:bg-white/5 border-transparent'
+                }`}
               >
-                <Home className="w-4 h-4 text-brand-primary" />
+                <Home className={`w-4 h-4 ${isHomeActive && !isBlogActive ? 'text-brand-primary' : 'text-slate-400'}`} />
                 الرئيسية
               </Link>
               <Link 
                 href="/#fixtures" 
-                className="flex items-center gap-2 px-4 py-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-all font-semibold text-sm"
+                className="flex items-center gap-2 px-4 py-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-all font-semibold text-sm border border-transparent"
               >
                 <Calendar className="w-4 h-4" />
                 جدول المباريات
               </Link>
               <Link 
                 href="/blog" 
-                className="flex items-center gap-2 px-4 py-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-all font-semibold text-sm"
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all font-bold text-sm border ${
+                  isBlogActive
+                    ? 'text-white bg-white/5 border-brand-primary/20'
+                    : 'text-slate-400 hover:text-white hover:bg-white/5 border-transparent'
+                }`}
               >
-                <BookOpen className="w-4 h-4" />
+                <BookOpen className={`w-4 h-4 ${isBlogActive ? 'text-brand-primary' : 'text-slate-400'}`} />
                 أهم الأخبار
               </Link>
             </nav>
@@ -84,20 +97,24 @@ export default function Header() {
 
       {/* Mobile Menu Drawer */}
       {isOpen && (
-        <div className="md:hidden glass-panel border-b border-brand-border absolute w-full left-0 animate-fade-in" dir="rtl">
+        <div className="md:hidden glass-panel border-b border-brand-border absolute w-full left-0 animate-fade-in z-50 shadow-2xl bg-[#0b0f19]/95 backdrop-blur-xl transition-all duration-300" dir="rtl">
           <div className="px-4 pt-2 pb-6 space-y-2">
             <Link
               href="/"
               onClick={() => setIsOpen(false)}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl text-white bg-brand-primary/10 border border-brand-primary/20 font-bold"
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl font-bold border ${
+                isHomeActive && !isBlogActive
+                  ? 'text-white bg-brand-primary/10 border-brand-primary/20'
+                  : 'text-slate-300 hover:text-white hover:bg-white/5 border-transparent'
+              }`}
             >
-              <Home className="w-5 h-5 text-brand-primary" />
+              <Home className={`w-5 h-5 ${isHomeActive && !isBlogActive ? 'text-brand-primary' : 'text-slate-400'}`} />
               الرئيسية
             </Link>
             <Link
               href="/#fixtures"
               onClick={() => setIsOpen(false)}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all font-semibold"
+              className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all font-semibold border border-transparent"
             >
               <Calendar className="w-5 h-5 text-slate-400" />
               جدول المباريات
@@ -105,15 +122,19 @@ export default function Header() {
             <Link
               href="/blog"
               onClick={() => setIsOpen(false)}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all font-semibold"
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl font-bold border ${
+                isBlogActive
+                  ? 'text-white bg-brand-primary/10 border-brand-primary/20'
+                  : 'text-slate-300 hover:text-white hover:bg-white/5 border-transparent'
+              }`}
             >
-              <BookOpen className="w-5 h-5 text-slate-400" />
+              <BookOpen className={`w-5 h-5 ${isBlogActive ? 'text-brand-primary' : 'text-slate-400'}`} />
               أهم الأخبار
             </Link>
             <Link
               href="/admin/dashboard"
               onClick={() => setIsOpen(false)}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all font-semibold"
+              className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all font-semibold border border-transparent"
             >
               <Search className="w-5 h-5 text-slate-400" />
               لوحة التحكم (أدمن)

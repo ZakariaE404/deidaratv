@@ -55,6 +55,7 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
 
@@ -460,6 +461,42 @@
                     }
                 }
 
+                // تحميل البث: HLS/MP4 عبر عنصر فيديو، أو صفحة عادية عبر iframe
+                function loadStream(url) {
+                    const decoded = decodeStreamUrl(url);
+                    const wrapper = document.getElementById('video-wrapper');
+                    const iframe = document.getElementById('player-iframe');
+                    // إزالة أي عنصر فيديو سابق
+                    const oldVideo = document.getElementById('hls-video-player');
+                    if (oldVideo) oldVideo.remove();
+
+                    if (decoded.includes('.m3u8') || decoded.includes('.mp4')) {
+                        // إخفاء iframe وعرض الفيديو
+                        iframe.style.display = 'none';
+                        const video = document.createElement('video');
+                        video.id = 'hls-video-player';
+                        video.controls = true;
+                        video.autoplay = true;
+                        video.playsInline = true;
+                        video.style.cssText = 'width:100%;height:100%;object-fit:contain;position:absolute;top:0;left:0;';
+                        wrapper.appendChild(video);
+
+                        if (typeof Hls !== 'undefined' && Hls.isSupported()) {
+                            const hls = new Hls();
+                            hls.loadSource(decoded);
+                            hls.attachMedia(video);
+                            hls.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(e => console.log(e)));
+                        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                            video.src = decoded;
+                            video.addEventListener('loadedmetadata', () => video.play().catch(e => console.log(e)));
+                        }
+                    } else {
+                        // رابط عادي - استخدام iframe
+                        iframe.style.display = 'block';
+                        iframe.src = decoded;
+                    }
+                }
+
                 // رندر أزرار السيرفرات وإعداد الرابط الافتراضي
                 const matchServers = match.servers || SHARED_SERVERS;
                 if (serversContainer && matchServers && matchServers.length > 0) {
@@ -468,7 +505,7 @@
                         serversContainer.innerHTML = '';
 
                         if (playerIframe) {
-                            playerIframe.src = decodeStreamUrl(matchServers[0].url);
+                            loadStream(matchServers[0].url);
                         }
 
                         matchServers.forEach((server, index) => {
@@ -487,7 +524,7 @@
                                 btn.classList.remove('bg-white');
 
                                 if (playerIframe) {
-                                    playerIframe.src = decodeStreamUrl(server.url);
+                                    loadStream(server.url);
                                 }
                             });
 

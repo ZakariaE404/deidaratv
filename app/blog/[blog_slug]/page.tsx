@@ -86,6 +86,15 @@ export default async function BlogPage({ params }: BlogPageProps) {
     notFound()
   }
 
+  // Fetch 3 suggested blog posts (excluding current)
+  const supabase = createClient()
+  const { data: suggestedBlogs } = await supabase
+    .from('blogs')
+    .select('*')
+    .neq('slug', blog.slug)
+    .order('created_at', { ascending: false })
+    .limit(3)
+
   // Calculate read time roughly
   const wordCount = blog.content.split(/\s+/).length
   const readTime = Math.max(1, Math.ceil(wordCount / 200)) // 200 wpm
@@ -158,7 +167,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10 flex flex-col gap-8" dir="rtl">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10 flex flex-col gap-8" dir="rtl">
         {/* Back Link */}
         <Link 
           href="/blog" 
@@ -170,7 +179,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
 
         {/* Article Header */}
         <section className="flex flex-col gap-4 border-b border-brand-border pb-6">
-          <h1 className="text-2xl md:text-4xl font-extrabold text-white leading-tight">
+          <h1 className="text-2xl md:text-4xl font-extrabold text-white leading-tight tracking-tight">
             {blog.title}
           </h1>
 
@@ -204,13 +213,68 @@ export default async function BlogPage({ params }: BlogPageProps) {
         )}
 
         {/* Article Reader Content */}
-        <article className="glass-card rounded-3xl p-6 md:p-10 border border-brand-border leading-relaxed text-slate-200">
+        <article className="glass-card rounded-3xl p-6 md:p-12 border border-brand-border leading-[1.9] text-slate-200">
           {/* We format paragraphs nicely. If content contains HTML we render it directly. */}
           <div 
-            className="prose prose-invert max-w-none text-slate-350 text-sm md:text-base space-y-6"
+            className="prose prose-invert prose-lg max-w-none text-slate-300 text-[15px] md:text-[17px] space-y-6 leading-[1.9] prose-headings:text-white prose-headings:font-bold prose-a:text-brand-primary prose-a:no-underline hover:prose-a:underline prose-strong:text-white prose-p:text-slate-300"
             dangerouslySetInnerHTML={{ __html: blog.content }}
           />
         </article>
+
+        {/* SEO Rich Description */}
+        <section className="glass-card rounded-2xl p-6 md:p-8 border border-brand-border">
+          <p className="text-sm md:text-[15px] text-slate-400 leading-[1.9] text-justify">
+            تابع أحدث أخبار الكرة العربية والعالمية عبر موقع <strong className="text-brand-primary">Deidara TV</strong> (<strong className="text-brand-primary">ديدارا تي في</strong>). شاهد <strong className="text-slate-300">مباريات اليوم بث مباشر</strong> على أفضل منصة <strong className="text-slate-300">بث مباشر</strong> للمباريات. يوفر لك موقع <strong className="text-brand-primary">كورة لايف</strong> (<strong className="text-brand-primary">koora live</strong> / <strong className="text-brand-primary">kora live</strong>) تغطية شاملة لجميع الدوريات والبطولات، بما في ذلك دوري أبطال أوروبا، الدوري الإنجليزي، الدوري الإسباني، وكأس العالم. تابعنا على <strong className="text-brand-primary">Deidara TV</strong> لمتابعة أحدث المقالات والتحليلات الرياضية الحصرية.
+          </p>
+        </section>
+
+        {/* Suggested Articles */}
+        {suggestedBlogs && suggestedBlogs.length > 0 && (
+          <section className="flex flex-col gap-5">
+            <div className="flex items-center gap-3">
+              <div className="w-1 h-6 rounded-full bg-brand-primary"></div>
+              <h2 className="text-lg md:text-xl font-extrabold text-white">مقالات ذات صلة</h2>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {suggestedBlogs.map((suggested: any) => (
+                <Link
+                  key={suggested.slug}
+                  href={`/blog/${suggested.slug}`}
+                  className="glass-card rounded-2xl border border-brand-border overflow-hidden group hover:border-brand-primary/40 transition-all duration-300 hover:shadow-lg hover:shadow-brand-primary/5 flex flex-col"
+                >
+                  {suggested.image_url && (
+                    <div className="aspect-[16/9] w-full overflow-hidden bg-slate-950/40">
+                      <img
+                        src={suggested.image_url}
+                        alt={suggested.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+                  )}
+                  <div className="p-4 flex flex-col gap-2.5 flex-1">
+                    <h3 className="text-sm md:text-[15px] font-bold text-white leading-snug line-clamp-2 group-hover:text-brand-primary transition-colors duration-200">
+                      {suggested.title}
+                    </h3>
+                    {suggested.meta_description && (
+                      <p className="text-xs text-slate-500 leading-relaxed line-clamp-2">
+                        {suggested.meta_description}
+                      </p>
+                    )}
+                    <div className="flex items-center gap-1.5 text-[11px] text-slate-600 mt-auto pt-1">
+                      <Calendar className="w-3.5 h-3.5 text-brand-accent" />
+                      {new Date(suggested.created_at).toLocaleDateString('ar-EG', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                      })}
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Bottom Share / Telegram Banner */}
         <section className="glass-card rounded-2xl p-6 border border-brand-border bg-[#0e1726]/20 flex flex-col sm:flex-row justify-between items-center gap-4">
