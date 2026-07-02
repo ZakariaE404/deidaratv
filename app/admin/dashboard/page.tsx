@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { slugify } from '@/lib/utils'
+import { slugify, decodeBase64 } from '@/lib/utils'
 import DOMPurify from 'dompurify'
 import { 
   Trophy, 
@@ -20,7 +20,8 @@ import {
   Activity,
   Calendar as CalendarIcon,
   Image as ImageIcon,
-  Flame
+  Flame,
+  Tv
 } from 'lucide-react'
 import TeamSearchInput from '@/components/TeamSearchInput'
 
@@ -63,6 +64,7 @@ export default function AdminDashboardPage() {
   // Status updates
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null)
   const [syncing, setSyncing] = useState(false)
+  const [testingUrl, setTestingUrl] = useState<string | null>(null)
 
   // Matches State & Filter
   const [matches, setMatches] = useState<Match[]>([])
@@ -910,32 +912,70 @@ export default function AdminDashboardPage() {
                         </button>
                       </div>
 
-                      <div className="flex flex-col gap-2.5">
-                        {match.servers?.map((server, sidx) => (
-                          <div key={sidx} className="flex gap-2 items-center">
-                            <input
-                              type="text"
-                              value={server.name}
-                              placeholder="اسم السيرفر (مثلاً سيرفر 1 HD)"
-                              onChange={(e) => handleUpdateMatchServer(match.id, sidx, 'name', e.target.value)}
-                              className="w-1/4 bg-[#070b13] border border-brand-border rounded-xl py-1.5 px-3 text-xs text-slate-200 font-semibold"
-                            />
-                            <input
-                              type="text"
-                              value={server.url}
-                              placeholder="الرابط المشفر Base64 أو المباشر"
-                              onChange={(e) => handleUpdateMatchServer(match.id, sidx, 'url', e.target.value)}
-                              className="flex-1 bg-[#070b13] border border-brand-border rounded-xl py-1.5 px-3 text-xs text-slate-200 text-left font-mono"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveServerField(match.id, sidx)}
-                              className="text-red-500 hover:bg-red-950/20 p-1.5 rounded-lg transition-colors"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        ))}
+                       <div className="flex flex-col gap-2.5">
+                        {match.servers?.map((server, sidx) => {
+                          const decoded = decodeBase64(server.url)
+                          const isTesting = testingUrl === decoded && decoded !== ''
+                          return (
+                            <div key={sidx} className="flex flex-col gap-2 bg-[#0b0f19]/40 p-2.5 rounded-xl border border-brand-border/40">
+                              <div className="flex gap-2 items-center">
+                                <input
+                                  type="text"
+                                  value={server.name}
+                                  placeholder="اسم السيرفر (مثلاً سيرفر 1 HD)"
+                                  onChange={(e) => handleUpdateMatchServer(match.id, sidx, 'name', e.target.value)}
+                                  className="w-1/4 bg-[#070b13] border border-brand-border rounded-xl py-1.5 px-3 text-xs text-slate-200 font-semibold"
+                                />
+                                <input
+                                  type="text"
+                                  value={server.url}
+                                  placeholder="الرابط المشفر Base64 أو المباشر"
+                                  onChange={(e) => handleUpdateMatchServer(match.id, sidx, 'url', e.target.value)}
+                                  className="flex-1 bg-[#070b13] border border-brand-border rounded-xl py-1.5 px-3 text-xs text-slate-200 text-left font-mono"
+                                />
+                                
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (!server.url) {
+                                      showNotification('الرجاء إدخال رابط السيرفر أولاً', 'error')
+                                      return
+                                    }
+                                    setTestingUrl(prev => prev === decoded ? null : decoded)
+                                  }}
+                                  className={`p-1.5 rounded-lg transition-colors flex items-center justify-center border ${
+                                    isTesting
+                                      ? 'bg-brand-primary/20 text-brand-primary border-brand-primary/45 shadow-sm'
+                                      : 'bg-[#1e293b] border-slate-700 text-slate-350 hover:text-brand-accent hover:border-slate-600'
+                                  }`}
+                                  title="اختبار السيرفر"
+                                >
+                                  <Tv className="w-3.5 h-3.5" />
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={() => handleRemoveServerField(match.id, sidx)}
+                                  className="text-red-550 hover:bg-red-950/20 p-1.5 border border-transparent hover:border-red-900/30 rounded-lg transition-colors"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+
+                              {isTesting && (
+                                <div className="mt-2 border border-brand-border rounded-xl overflow-hidden bg-black aspect-video w-full max-w-[480px] mx-auto relative shadow-inner">
+                                  <iframe
+                                    src={decoded}
+                                    className="w-full h-full border-0"
+                                    allowFullScreen
+                                    allow="autoplay; encrypted-media"
+                                    sandbox="allow-scripts allow-same-origin allow-presentation allow-forms"
+                                  ></iframe>
+                                </div>
+                              )}
+                            </div>
+                          )
+                        })}
                       </div>
                     </div>
 

@@ -6,7 +6,9 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { Tv, Calendar, Info, Send, Trophy, ArrowRight } from 'lucide-react'
 
-export const revalidate = 900 // 15 minutes static revalidation window
+// Force dynamic rendering for live match data freshness
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 interface MatchPageProps {
   params: {
@@ -14,15 +16,25 @@ interface MatchPageProps {
   }
 }
 
-// Fetch match helper
+// Fetch match helper with error handling
 async function getMatch(slug: string) {
-  const supabase = createClient()
-  const { data: match } = await supabase
-    .from('matches')
-    .select('*')
-    .eq('slug', slug)
-    .single()
-  return match
+  try {
+    const supabase = createClient()
+    const { data: match, error } = await supabase
+      .from('matches')
+      .select('*')
+      .eq('slug', slug)
+      .single()
+    
+    if (error) {
+      console.error('Supabase match fetch error:', error.message)
+      return null
+    }
+    return match
+  } catch (err) {
+    console.error('Failed to fetch match:', err)
+    return null
+  }
 }
 
 // Dynamic SEO metadata generator
@@ -36,15 +48,17 @@ export async function generateMetadata({ params }: MatchPageProps): Promise<Meta
 
   const isLive = match.status === 'LIVE'
   const isFinished = match.status === 'FT'
+  const scoreA = match.score_a ?? 0
+  const scoreB = match.score_b ?? 0
 
   let title = `بث مباشر مباراة ${match.team_a} ضد ${match.team_b} | Deidara TV`
   if (isLive) {
-    title = `🔴 مباشر: ${match.team_a} (${match.score_a}) - (${match.score_b}) ${match.team_b} | بث مباشر كورة لايف`
+    title = `🔴 مباشر: ${match.team_a} (${scoreA}) - (${scoreB}) ${match.team_b} | بث مباشر كورة لايف`
   } else if (isFinished) {
-    title = `النتيجة: ${match.team_a} ${match.score_a} - ${match.score_b} ${match.team_b} | ملخص المباراة Deidara TV`
+    title = `النتيجة: ${match.team_a} ${scoreA} - ${scoreB} ${match.team_b} | ملخص المباراة Deidara TV`
   }
 
-  const description = `شاهد البث المباشر لمباراة ${match.team_a} ضد ${match.team_b} بجودة عالية وبدون تقطيع. تابع تفاصيل المواجهة، القنوات الناقلة وتحديثات الأهداف لحظة بلحظة.`
+  const description = `شاهد البث المباشر لمباراة ${match.team_a} ضد ${match.team_b} بجودة عالية وبدون تقطيع. تابع تفاصيل المواجهة، القنوات الناقلة وتحديثات الأهداف لحظة بلحظة على كورة لايف Koora Live.`
 
   return {
     title,
@@ -57,14 +71,22 @@ export async function generateMetadata({ params }: MatchPageProps): Promise<Meta
       description,
       url: `https://deidaratv.live/match/${match.slug}`,
       siteName: 'DeidaraTV',
+      type: 'website',
+      locale: 'ar_AR',
       images: [
         {
-          url: `https://deidaratv.live/api/og?matchId=${match.id}`, // Custom og image endpoint
+          url: `https://deidaratv.live/api/og?matchId=${match.id}`,
           width: 1200,
           height: 630,
           alt: `${match.team_a} vs ${match.team_b}`,
         },
       ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [`https://deidaratv.live/api/og?matchId=${match.id}`],
     },
   }
 }
@@ -78,14 +100,30 @@ export default async function MatchPage({ params }: MatchPageProps) {
 
   const isLive = match.status === 'LIVE'
   const isFinished = match.status === 'FT'
+  const scoreA = match.score_a ?? 0
+  const scoreB = match.score_b ?? 0
+  const servers = Array.isArray(match.servers) ? match.servers : []
+
+  // Safe date formatting
+  let formattedTime = ''
+  let formattedDate = ''
+  try {
+    formattedTime = formatLocalTime(match.start_time)
+    formattedDate = formatLocalDate(match.start_time)
+  } catch {
+    formattedTime = '--:--'
+    formattedDate = 'غير محدد'
+  }
 
   // Dynamic SportsEvent Schema markup
-  const jsonLd = {
+  const sportsEventJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'SportsEvent',
     'name': `${match.team_a} ضد ${match.team_b}`,
-    'description': `بث مباشر مباراة ${match.team_a} ضد ${match.team_b} بجودة عالية.`,
+    'description': `بث مباشر مباراة ${match.team_a} ضد ${match.team_b} بجودة عالية - ${match.league || 'كأس العالم 2026'}.`,
     'startDate': match.start_time,
+    'eventStatus': isFinished ? 'https://schema.org/EventCompleted' : (isLive ? 'https://schema.org/EventScheduled' : 'https://schema.org/EventScheduled'),
+    'eventAttendanceMode': 'https://schema.org/OnlineEventAttendanceMode',
     'homeTeam': {
       '@type': 'SportsTeam',
       'name': match.team_a,
@@ -105,15 +143,67 @@ export default async function MatchPage({ params }: MatchPageProps) {
       { '@type': 'SportsTeam', 'name': match.team_a },
       { '@type': 'SportsTeam', 'name': match.team_b },
     ],
+    'offers': {
+      '@type': 'Offer',
+      'url': `https://deidaratv.live/match/${match.slug}`,
+      'price': '0',
+      'priceCurrency': 'USD',
+      'availability': 'https://schema.org/InStock',
+    },
   }
+
+  // BreadcrumbList schema
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    'itemListElement': [
+      {
+        '@type': 'ListItem',
+        'position': 1,
+        'name': 'الرئيسية',
+        'item': 'https://deidaratv.live',
+      },
+      {
+        '@type': 'ListItem',
+        'position': 2,
+        'name': `${match.team_a} ضد ${match.team_b}`,
+        'item': `https://deidaratv.live/match/${match.slug}`,
+      },
+    ],
+  }
+
+  // VideoObject schema when live
+  const videoJsonLd = isLive && servers.length > 0 ? {
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    'name': `بث مباشر ${match.team_a} ضد ${match.team_b}`,
+    'description': `شاهد البث المباشر لمباراة ${match.team_a} ضد ${match.team_b} على Deidara TV`,
+    'thumbnailUrl': match.team_a_logo || 'https://deidaratv.live/imgs/icon.png',
+    'uploadDate': match.start_time,
+    'publication': {
+      '@type': 'BroadcastEvent',
+      'isLiveBroadcast': true,
+      'startDate': match.start_time,
+    },
+  } : null
 
   return (
     <>
-      {/* Inject JSON-LD Schema */}
+      {/* Inject JSON-LD Schemas */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(sportsEventJsonLd) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      {videoJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(videoJsonLd) }}
+        />
+      )}
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10 flex flex-col gap-8" dir="rtl">
         {/* Back Link */}
@@ -151,11 +241,11 @@ export default async function MatchPage({ params }: MatchPageProps) {
               <div className="flex flex-col items-center gap-1">
                 <div className="flex items-center gap-4">
                   <span className={`text-4xl md:text-5xl font-black tracking-tight ${isLive ? 'text-brand-primary glow-text-primary' : 'text-slate-400'}`}>
-                    {match.score_a}
+                    {scoreA}
                   </span>
                   <span className="text-slate-650 font-bold text-2xl">-</span>
                   <span className={`text-4xl md:text-5xl font-black tracking-tight ${isLive ? 'text-brand-primary glow-text-primary' : 'text-slate-400'}`}>
-                    {match.score_b}
+                    {scoreB}
                   </span>
                 </div>
                 {isLive && (
@@ -173,7 +263,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
               <div className="flex flex-col items-center gap-1 text-center">
                 <span className="text-2xl font-black text-slate-500 tracking-wider">VS</span>
                 <span className="text-xs md:text-sm font-bold text-slate-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl mt-2">
-                  {formatLocalTime(match.start_time)}
+                  {formattedTime}
                 </span>
               </div>
             )}
@@ -203,7 +293,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
             <h2 className="text-lg md:text-xl font-extrabold text-white">شاشة البث المباشر</h2>
           </div>
           
-          <StreamPlayer servers={match.servers || []} />
+          <StreamPlayer servers={servers} />
         </section>
 
         {/* Details Grid (Bento Grid Style) */}
@@ -227,11 +317,11 @@ export default async function MatchPage({ params }: MatchPageProps) {
               </div>
               <div className="flex flex-col gap-1">
                 <span className="text-slate-500 font-bold">التاريخ</span>
-                <span className="text-slate-200 font-extrabold">{formatLocalDate(match.start_time)}</span>
+                <span className="text-slate-200 font-extrabold">{formattedDate}</span>
               </div>
               <div className="flex flex-col gap-1">
                 <span className="text-slate-500 font-bold">التوقيت المحلي</span>
-                <span className="text-slate-200 font-extrabold">{formatLocalTime(match.start_time)}</span>
+                <span className="text-slate-200 font-extrabold">{formattedTime}</span>
               </div>
             </div>
           </div>

@@ -1,15 +1,26 @@
 import './globals.css'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import { Metadata } from 'next'
+import { Metadata, Viewport } from 'next'
+
+export const viewport: Viewport = {
+  themeColor: '#0b0f19',
+  colorScheme: 'dark',
+  width: 'device-width',
+  initialScale: 1,
+}
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://deidaratv.live'),
   title: 'Deidara TV | بث مباشر للمباريات اليوم - Kora Live كورة لايف',
   description: 'Deidara TV - بث مباشر للمباريات اليوم بجودة HD بدون تقطيع. شاهد كورة لايف koora live وتابع أهم مباريات كأس العالم 2026 والدوريات مجاناً.',
   keywords: ['Kora live', 'koora live', 'كورة لايف', 'بث مباشر', 'بث مباشر للمباريات', 'Deidara TV', 'DeidaraTV', 'ديدارا تي في', 'مباريات اليوم', 'بث مباشر بدون تقطيع', 'كاس العالم 2026'],
+  category: 'sports',
   alternates: {
     canonical: '/',
+  },
+  verification: {
+    google: 'your-google-site-verification-here', // Placeholder for user verification
   },
   openGraph: {
     type: 'website',
@@ -20,9 +31,9 @@ export const metadata: Metadata = {
     locale: 'ar_AR',
     images: [
       {
-        url: '/imgs/icon.png',
-        width: 512,
-        height: 512,
+        url: '/imgs/cover.jpg',
+        width: 1200,
+        height: 630,
         alt: 'Deidara TV Logo',
       },
     ],
@@ -31,7 +42,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Deidara TV | بث مباشر للمباريات اليوم - Kora Live كورة لايف',
     description: 'Deidara TV - بث مباشر للمباريات اليوم بجودة HD بدون تقطيع. شاهد كورة لايف koora live وتابع أهم مباريات كأس العالم 2026 والدوريات مجاناً.',
-    images: ['/imgs/icon.png'],
+    images: ['/imgs/cover.jpg'],
   },
 }
 
