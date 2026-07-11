@@ -7,6 +7,7 @@ import { Tv, Play, Loader2 } from 'lucide-react'
 interface Server {
   name: string
   url: string
+  type?: string
 }
 
 interface StreamPlayerProps {
@@ -29,10 +30,21 @@ export default function StreamPlayer({ servers }: StreamPlayerProps) {
 
   const activeServer = servers?.[activeServerIndex]
   const decodedUrl = activeServer ? decodeBase64(activeServer.url) : ''
+  const serverType = activeServer?.type || 'auto'
+
+  const checkIsHtml = (str: string) => {
+    const trimmed = str.trim()
+    return trimmed.startsWith('<') && trimmed.endsWith('>')
+  }
+
+  const isHtml = checkIsHtml(decodedUrl)
 
   // Detect stream type
   const checkIsHls = (url: string) => {
     if (!url) return false
+    if (serverType === 'hls') return true
+    if (serverType === 'iframe') return false
+    if (isHtml) return false
     return url.toLowerCase().includes('.m3u8') || url.toLowerCase().includes('.mp4')
   }
 
@@ -164,6 +176,11 @@ export default function StreamPlayer({ servers }: StreamPlayerProps) {
                 poster="/imgs/cover.jpg"
               ></video>
             </div>
+          ) : isHtml ? (
+            <div 
+              className="w-full h-full [&_iframe]:w-full [&_iframe]:h-full [&_iframe]:border-0"
+              dangerouslySetInnerHTML={{ __html: decodedUrl }}
+            />
           ) : (
             <div className="w-full h-full relative">
               {loading && (

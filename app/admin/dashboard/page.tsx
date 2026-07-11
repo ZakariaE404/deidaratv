@@ -40,7 +40,7 @@ interface Match {
   start_time: string
   league?: string | null
   channel?: string | null
-  servers: { name: string; url: string }[]
+  servers: { name: string; url: string; type?: string }[]
 }
 
 interface Blog {
@@ -84,7 +84,7 @@ export default function AdminDashboardPage() {
     start_time: '',
     league: 'كأس العالم 2026',
     channel: 'beIN Sports HD 1',
-    servers: [{ name: 'سيرفر 1', url: '' }]
+    servers: [{ name: 'سيرفر 1', url: '', type: 'auto' }]
   })
 
   // Blogs State
@@ -203,7 +203,7 @@ export default function AdminDashboardPage() {
           start_time: fixture.start_time,
           league: fixture.league,
           channel: 'beIN Sports HD 1',
-          servers: [{ name: 'سيرفر 1', url: '' }],
+          servers: [{ name: 'سيرفر 1', url: '', type: 'auto' }],
           is_manual: false
         })
 
@@ -222,7 +222,7 @@ export default function AdminDashboardPage() {
     setMatches(prev => prev.map(m => m.id === id ? { ...m, [field]: value } : m))
   }
 
-  const handleUpdateMatchServer = (matchId: string, idx: number, field: 'name' | 'url', val: string) => {
+  const handleUpdateMatchServer = (matchId: string, idx: number, field: 'name' | 'url' | 'type', val: string) => {
     setMatches(prev => prev.map(m => {
       if (m.id === matchId) {
         const updatedServers = [...m.servers]
@@ -236,7 +236,7 @@ export default function AdminDashboardPage() {
   const handleAddServerField = (matchId: string) => {
     setMatches(prev => prev.map(m => {
       if (m.id === matchId) {
-        return { ...m, servers: [...m.servers, { name: `سيرفر ${m.servers.length + 1}`, url: '' }] }
+        return { ...m, servers: [...m.servers, { name: `سيرفر ${m.servers.length + 1}`, url: '', type: 'auto' }] }
       }
       return m
     }))
@@ -319,7 +319,7 @@ export default function AdminDashboardPage() {
         start_time: '',
         league: 'كأس العالم 2026',
         channel: 'beIN Sports HD 1',
-        servers: [{ name: 'سيرفر 1', url: '' }]
+        servers: [{ name: 'سيرفر 1', url: '', type: 'auto' }]
       })
       fetchData()
     } catch (err: any) {
@@ -996,12 +996,21 @@ export default function AdminDashboardPage() {
                                   value={server.name}
                                   placeholder="اسم السيرفر (مثلاً سيرفر 1 HD)"
                                   onChange={(e) => handleUpdateMatchServer(match.id, sidx, 'name', e.target.value)}
-                                  className="w-1/4 bg-[#070b13] border border-brand-border rounded-xl py-1.5 px-3 text-xs text-slate-200 font-semibold"
+                                  className="w-[120px] bg-[#070b13] border border-brand-border rounded-xl py-1.5 px-3 text-xs text-slate-200 font-semibold"
                                 />
+                                <select
+                                  value={server.type || 'auto'}
+                                  onChange={(e) => handleUpdateMatchServer(match.id, sidx, 'type', e.target.value)}
+                                  className="w-[110px] bg-[#070b13] border border-brand-border rounded-xl py-1.5 px-2 text-[10px] md:text-xs text-slate-200 font-semibold focus:outline-none"
+                                >
+                                  <option value="auto">تلقائي (Auto)</option>
+                                  <option value="hls">m3u8 (HLS)</option>
+                                  <option value="iframe">إطار (Iframe)</option>
+                                </select>
                                 <input
                                   type="text"
                                   value={server.url}
-                                  placeholder="الرابط المشفر Base64 أو المباشر"
+                                  placeholder="الرابط المشفر Base64، المباشر، أو كود iframe الكامل"
                                   onChange={(e) => handleUpdateMatchServer(match.id, sidx, 'url', e.target.value)}
                                   className="flex-1 bg-[#070b13] border border-brand-border rounded-xl py-1.5 px-3 text-xs text-slate-200 text-left font-mono"
                                 />
@@ -1036,13 +1045,39 @@ export default function AdminDashboardPage() {
 
                               {isTesting && (
                                 <div className="mt-2 border border-brand-border rounded-xl overflow-hidden bg-black aspect-video w-full max-w-[480px] mx-auto relative shadow-inner">
-                                  <iframe
-                                    src={decoded}
-                                    className="w-full h-full border-0"
-                                    allowFullScreen
-                                    allow="autoplay; encrypted-media"
-                                    sandbox="allow-scripts allow-same-origin allow-presentation allow-forms"
-                                  ></iframe>
+                                  {(() => {
+                                    const trimmed = decoded.trim()
+                                    const isHtml = trimmed.startsWith('<') && trimmed.endsWith('>')
+                                    const type = server.type || 'auto'
+                                    const isHls = type === 'hls' || (type === 'auto' && (trimmed.toLowerCase().includes('.m3u8') || trimmed.toLowerCase().includes('.mp4')))
+                                    
+                                    if (isHtml) {
+                                      return (
+                                        <div 
+                                          className="w-full h-full [&_iframe]:w-full [&_iframe]:h-full [&_iframe]:border-0"
+                                          dangerouslySetInnerHTML={{ __html: decoded }}
+                                        />
+                                      )
+                                    } else if (isHls) {
+                                      return (
+                                        <div className="w-full h-full flex flex-col items-center justify-center bg-slate-900/60 p-4 text-center">
+                                          <Tv className="w-8 h-8 text-brand-primary mb-2 animate-pulse" />
+                                          <span className="text-xs text-slate-300 font-bold">بث مباشر HLS (m3u8)</span>
+                                          <span className="text-[10px] text-slate-500 max-w-xs break-all mt-1">{decoded}</span>
+                                        </div>
+                                      )
+                                    } else {
+                                      return (
+                                        <iframe
+                                          src={decoded}
+                                          className="w-full h-full border-0"
+                                          allowFullScreen
+                                          allow="autoplay; encrypted-media"
+                                          sandbox="allow-scripts allow-same-origin allow-presentation allow-forms"
+                                        ></iframe>
+                                      )
+                                    }
+                                  })()}
                                 </div>
                               )}
                             </div>
