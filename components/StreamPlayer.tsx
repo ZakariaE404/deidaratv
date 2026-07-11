@@ -197,7 +197,6 @@ export default function StreamPlayer({ servers }: StreamPlayerProps) {
                 allowFullScreen
                 allow="autoplay; encrypted-media; picture-in-picture"
                 referrerPolicy="no-referrer"
-                sandbox="allow-scripts allow-same-origin allow-presentation allow-forms"
                 onLoad={() => setLoading(false)}
               ></iframe>
             </div>

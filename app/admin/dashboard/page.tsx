@@ -1073,7 +1073,6 @@ export default function AdminDashboardPage() {
                                           className="w-full h-full border-0"
                                           allowFullScreen
                                           allow="autoplay; encrypted-media"
-                                          sandbox="allow-scripts allow-same-origin allow-presentation allow-forms"
                                         ></iframe>
                                       )
                                     }

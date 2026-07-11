@@ -15,11 +15,28 @@ export function cn(...inputs: (string | boolean | undefined | null | {[key: stri
 
 export function decodeBase64(str: string): string {
   if (!str) return ''
+  
+  // If it's already a decoded URL or HTML content, do not decode.
+  if (
+    str.startsWith('http://') || 
+    str.startsWith('https://') || 
+    str.trim().startsWith('<') ||
+    str.includes('://') ||
+    str.includes('?')
+  ) {
+    return str
+  }
+
   try {
     // Check if it runs in browser or server
     if (typeof window !== 'undefined') {
       return window.atob(str)
     } else {
+      // Buffer.from doesn't throw on invalid base64 in Node.js, so we validate first
+      const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/
+      if (!base64Regex.test(str) || str.length % 4 !== 0) {
+        return str
+      }
       return Buffer.from(str, 'base64').toString('utf-8')
     }
   } catch (e) {
